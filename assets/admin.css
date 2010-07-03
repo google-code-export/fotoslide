@@ -10,7 +10,8 @@ div.message.notice { color:#514721; border-color:#FFD324; background:none repeat
 #wps3medialist-wrap { padding:20px; }
 div.pagination span, .pagination .next, .pagination .prev { margin:3px; }
 #new-gallery-item-form { background:#f4f4f4; padding:5px 20px 15px 20px; }
-
+td.empty-table-data { text-align:center; background-color:#FFC; }
+td.empty-table-data p { font-size:1.4em; font-weight:bold }
 
 
 
