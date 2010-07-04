@@ -221,9 +221,9 @@ if(count($items) > 0) {
 	$sql = "SELECT
 			  p.post_id,
 			  p.meta_value,
-			  (SELECT meta_value FROM $wpdb->postmeta WHERE post_id = p.post_id AND meta_key = '_wps3_image_meta') AS val
+			  (SELECT meta_value FROM $wpdb->postmeta WHERE post_id = p.post_id AND meta_key = '_fs_image_meta') AS val
 			FROM $wpdb->postmeta p
-			WHERE p.post_id IN($in) AND p.meta_key = '_wps3_image_order'
+			WHERE p.post_id IN($in) AND p.meta_key = '_fs_image_order'
 			ORDER BY p.meta_value ASC";
 	$meta = $wpdb->get_results($sql);
 	foreach($meta as $meta_item) {
@@ -232,11 +232,11 @@ if(count($items) > 0) {
 		$images[] = array(
 			'post_id'=>$meta_item->post_id,
 			'image_link'=>$data['image_link'],
-			'image_text'=>$data['image_text'],
-			'span_location'=>$data['span_location'],
-			'span_opacity'=>$data['span_opacity'],
-			'span_bg_colour'=>$data['span_bg_colour'],
-			'span_text_colour'=>$data['span_text_colour'],
+			'caption_text'=>$data['caption_text'],
+			'caption_location'=>$data['caption_location'],
+			'caption_opacity'=>$data['caption_opacity'],
+			'caption_bg_colour'=>$data['caption_bg_colour'],
+			'caption_text_colour'=>$data['caption_text_colour'],
 			'order'=>$data['order'],
 			'file'=>$data['file']
 		);
@@ -246,7 +246,7 @@ if(count($items) > 0) {
 ?>
 <p>&nbsp;</p>
 <div id="new-gallery-item-form">
-<h3>Add a new image to the gallery</h3>
+<h3><?php _e('Add a new image to the gallery'); ?></h3>
 <form method="post" action="<?php echo WP_PLUGIN_BASE_URL; ?>&amp;action=gallery-items&amp;gid=<?php echo $gallery->id; ?>&amp;insert-item=">
 <?php wp_nonce_field('item-add'); ?>
 <table class="form-table">
@@ -354,20 +354,20 @@ if(count($items) > 0) {
       <td><?php echo wp_get_attachment_image($image['post_id'],array(70,70));?></td>
       <td><input type="text" name="Images[<?php echo $i; ?>][image_link]" value="<?php echo stripslashes($image['image_link']); ?>" class="regular-text" />
       <input type="hidden" name="Images[<?php echo $i; ?>][post_id]" value="<?php echo $image['post_id']; ?>" /></td>
-      <td><textarea name="Images[<?php echo $i; ?>][image_text]" cols="35" rows="4"><?php echo stripslashes($image['image_text']); ?></textarea></td>
-      <td><select name="Images[<?php echo $i; ?>][span_location]">
-      		<option value="top"<?php if($image['span_location']=='top'): ?> selected="selected"<?php endif; ?>><?php _e('Top'); ?></option>
-            <option value="right"<?php if($image['span_location']=='right'): ?> selected="selected"<?php endif; ?>><?php _e('Right'); ?></option>
-            <option value="bottom"<?php if($image['span_location']=='bottom'): ?> selected="selected"<?php endif; ?>><?php _e('Bottom'); ?></option>
-            <option value="left"<?php if($image['span_location']=='left'): ?> selected="selected"<?php endif; ?>><?php _e('Left'); ?></option>
+      <td><textarea name="Images[<?php echo $i; ?>][caption_text]" cols="35" rows="4"><?php echo stripslashes($image['caption_text']); ?></textarea></td>
+      <td><select name="Images[<?php echo $i; ?>][caption_location]">
+      		<option value="top"<?php if($image['caption_location']=='top'): ?> selected="selected"<?php endif; ?>><?php _e('Top'); ?></option>
+            <option value="right"<?php if($image['caption_location']=='right'): ?> selected="selected"<?php endif; ?>><?php _e('Right'); ?></option>
+            <option value="bottom"<?php if($image['caption_location']=='bottom'): ?> selected="selected"<?php endif; ?>><?php _e('Bottom'); ?></option>
+            <option value="left"<?php if($image['caption_location']=='left'): ?> selected="selected"<?php endif; ?>><?php _e('Left'); ?></option>
       </select></td>
-	  <td><select name="Images[<?php echo $i; ?>][image_span_opacity]" id="image_span_opacity">
+	  <td><select name="Images[<?php echo $i; ?>][caption_opacity]" id="image_span_opacity">
 	    	<?php for($ii=5; $ii<=100; $ii = ($ii+5)) : ?>
-	        <option value="<?php echo $ii; ?>"<?php if($ii==((float)$image['span_opacity']*100)) : ?> selected="selected"<?php endif; ?>><?php _e($ii . '%'); ?></option>
+	        <option value="<?php echo $ii; ?>"<?php if($ii==((float)$image['caption_opacity']*100)) : ?> selected="selected"<?php endif; ?>><?php _e($ii . '%'); ?></option>
 	        <?php endfor; ?>
 	    </select></td>
-	  <td><input type="text" name="Images[<?php echo $i; ?>][image_span_colour]" class="regular-text" value="<?php echo $image['span_bg_colour']; ?>" /></td>
-	  <td><input type="text" name="Images[<?php echo $i; ?>][image_text_colour]" class="regular-text" value="<?php echo $image['span_text_colour']; ?>" /></td>
+	  <td><input type="text" name="Images[<?php echo $i; ?>][caption_bg_colour]" class="regular-text" value="<?php echo $image['caption_bg_colour']; ?>" /></td>
+	  <td><input type="text" name="Images[<?php echo $i; ?>][caption_text_colour]" class="regular-text" value="<?php echo $image['caption_text_colour']; ?>" /></td>
       <td><select name="Images[<?php echo $i; ?>][order]">
       		<?php for($ii=1; $ii<=count($images); $ii++) : ?>
             <option value="<?php echo $ii; ?>"<?php if((int)$image['order'] == $ii) : ?> selected="selected"<?php endif; ?>><?php echo $ii; ?></option>
