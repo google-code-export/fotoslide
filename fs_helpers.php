@@ -17,14 +17,14 @@ function is_wpmu()
  * @param	integer
  * @return	mixed
  */
-function wps3_render_slider( $gid )
+function fs_render_slider( $gid )
 {
 	global $wpdb;
 	
 	$gallery = $wpdb->get_row($wpdb->prepare("SELECT * FROM ".FS_TABLENAME." WHERE id = %d",array($gid)));
 	if(!$gallery)
 		return false;
-	
+		
 	if(count(unserialize($gallery->items)) < 1)
 		return false;
 	
@@ -45,7 +45,7 @@ function wps3_render_slider( $gid )
 		return false;
 	
 
-	$ret = "\t\n\n<span id=\"intelislide-{$gid}\">\n";
+	$ret = "\t\n\n<span id=\"intelislide-{$gid}\" class=\"intelislide\">\n";
 	
 	// loop through
 	foreach($images as $image) {
@@ -53,31 +53,31 @@ function wps3_render_slider( $gid )
 		
 		$ret .= '<a href="'.$meta['image_link'].'"';
 		
-		if(empty($meta['image_text'])) {
+		if(empty($meta['caption_text'])) {
 			$ret .= '>';
 		} else {
-			$ret .= ' title="'.stripslashes($meta['image_text']).'" rel="';
+			$ret .= ' title="'.stripslashes($meta['caption_text']).'" rel="';
 			
 			// set caption background colour
-			if(!empty($meta['span_bg_colour']))
-				$ret .= 'bg:'.$meta['span_bg_colour'].';';
+			if(!empty($meta['caption_bg_colour']))
+				$ret .= 'bg:'.$meta['caption_bg_colour'].';';
 			
 			// set caption text colour
-			if(!empty($meta['span_text_colour']))
-				$ret .= 'txt:'.$meta['span_text_colour'].';';
+			if(!empty($meta['caption_text_colour']))
+				$ret .= 'txt:'.$meta['caption_text_colour'].';';
 			
 			// set caption opacity
-			if(!empty($meta['span_opacity']))
-				$ret .= 'opacity:'.$meta['span_opacity'].';';
+			if(!empty($meta['caption_opacity']))
+				$ret .= 'opacity:'.$meta['caption_opacity'].';';
 			
 			// set caption position
-			if(!empty($meta['span_location']))
-				$ret .= 'pos:'.$meta['span_location'].';';
+			if(!empty($meta['caption_location']))
+				$ret .= 'pos:'.$meta['caption_location'].';';
 				
 			$ret .= '">';
 		}
 		
-		$ret .= '<img src="'.WP_PLUGIN_URL.'/wps3slider/timthumb.php?src='.$meta['file'].'&amp;w='.$gallery->width.'&amp;h='.$gallery->height.'"';
+		$ret .= '<img src="'.WP_PLUGIN_URL.'/fotoslide/timthumb.php?src='.$meta['file'].'&amp;w='.$gallery->width.'&amp;h='.$gallery->height.'"';
 		$ret .= ' alt="Image" /></a>'."\n";
 	}
 	
