@@ -44,7 +44,8 @@ require_once(dirname(__FILE__).'/fs_helpers.php');
 // load admin menu
 require_once(dirname(__FILE__).'/fs_admin.php');
 
-
+// array holder for galleries
+$pageGalleries = array();
 
 
 /**
@@ -81,3 +82,104 @@ function fs_register_scripts()
 	wp_enqueue_script('intelislide');
 }
 add_action('init','fs_register_scripts');
+
+/**
+ * Register shortcode
+ *
+ * This adds the shortcode wps3 to the system so that
+ * you can use the wps3 shortcode tag in the theme
+ * files.
+ *
+ * @param	array
+ * @return	null
+ */
+function fs_shortcode( $params )
+{
+	if(isset($params['id'])) {
+		global $pageGalleries;
+		$pageGalleries[] = $params['id'];
+		echo fs_render_slider($params['id']);
+	}
+}
+add_shortcode('fs','fs_shortcode');
+
+
+/**
+ * Render galleries
+ *
+ * This filters a post/page content for the shortcode and
+ * renders the appropriate gallery on the page
+ *
+ * @param	string
+ * @return	null
+ */
+function fs_filter_content( $content )
+{
+	global $pageGalleries;
+	$pattern = '/\[fs\sid=\"([0-9]*)\"\]/i';
+	$galleries = array();
+	
+	if(preg_match_all($pattern, $content, $matches, PREG_SET_ORDER)) {
+		foreach($matches as $gallery) {
+			$slider = fs_render_slider(trim($gallery[1]));
+			if($slider) {
+				$content = str_replace('[fs id="'.$gallery[1].'"]', $slider, $content);
+				$galleries[] = (int)$gallery[1];
+			} else {
+				$content = preg_replace('/\[fs\sid=\"'.$gallery[1].'\"\]/', '', $content);
+			}
+		}
+	}
+	
+	if(count($galleries) > 0)
+		$pageGalleries = $galleries;
+		
+	return $content;
+}
+add_filter('the_content','fs_filter_content');
+
+
+/**
+ * Prepeare galleries code into the footer
+ */
+function fs_prepare_js( $galleries = array() )
+{
+	global $pageGalleries, $wpdb;
+	
+	if(count($pageGalleries) > 0) {
+		$galleries = $wpdb->get_results("SELECT * FROM ".FS_TABLENAME." WHERE id IN(".implode(',',$pageGalleries).")");
+		?>
+		<!-- simpleslide -->
+		<script type="text/javascript">
+		//<![CDATA[
+		jQuery(document).ready(function($) {
+			<?php foreach($galleries as $gallery) : ?>
+			
+			$("#intelislide-<?php echo $gallery->id; ?>").intelislide({width:<?php echo $gallery->width; ?>,height:<?php echo $gallery->height; ?>,tagType:'span',transitionSpeed:<?php echo $gallery->transition_speed; ?>,timeout:<?php echo $gallery->timeout; ?>});
+			<?php endforeach; ?>
+			
+		});
+		//]]>
+		</script>
+		<?php
+	}
+}
+add_action('wp_footer','fs_prepare_js');
+
+
+/**
+ * Add icon to the page/post editor for selecting and inserting
+ * FotoSlide galleries
+ * 
+ * @return	null
+ */
+function fs_media_buttons()
+{
+	?>
+	<a class="thickbox" href="<?php echo WP_PLUGIN_URL; ?>/fotoslide/fs_galselect.php?TB_iframe=1&amp;height=400" title="<?php _e('Select a FotoSlide gallery'); ?>">
+	  <img src="<?php echo WP_PLUGIN_URL; ?>/fotoslide/assets/photos.png" alt="FotoSlide Gallery Selector" />
+	</a>
+	<?php
+}
+add_action('media_buttons','fs_media_buttons',11);
+?>
