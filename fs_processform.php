@@ -178,12 +178,12 @@ elseif($action == 'gallery-items' && isset($_GET['gid']) && isset($_GET['insert-
 				'showform'=>true
 			);
 		} else {
-			$gallery = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$wpdb->prefix}wps3_galleries WHERE id = %d",array($_GET['gid'])));
+			$gallery = $wpdb->get_row($wpdb->prepare("SELECT * FROM ".FS_TABLENAME." WHERE id = %d",array($_GET['gid'])));
 			if(!$gallery) {
 				$message = array(
 					'output'=>true,
 					'type'=>'err',
-					'message'=>'Invalid gallery selected - Does it really exist',
+					'message'=>'Invalid gallery selected - Does it really exist?',
 					'action'=>'gallery-items',
 					'showform'=>true
 				);
@@ -200,27 +200,26 @@ elseif($action == 'gallery-items' && isset($_GET['gid']) && isset($_GET['insert-
 				// add image to gallery
 				$items = unserialize($gallery->items);
 				array_push($items, (int)$_POST['image_post_id']);
-				$wpdb->update($wpdb->prefix.'wps3_galleries',
+				$wpdb->update(FS_TABLENAME,
 							  array('items'=>serialize($items)),
 							  array('id'=>$_GET['gid']),
 							  array('%s'),
 							  array('%d'));
 				
 				// update post meta with specifics
-				$basePath = get_option('upload_path');
 				$imageMeta = array(
 					'image_link' => addslashes((string)$_POST['image_link']),
-					'image_text' => addslashes((string)$_POST['image_text']),
-					'span_location' => (string)$_POST['image_span_location'],
-					'span_opacity'=>round(((int)$_POST['image_span_opacity']/100),2),
-					'span_bg_colour'=>addslashes((string)$_POST['image_span_colour']),
-					'span_text_colour'=>addslashes((string)$_POST['image_text_colour']),
+					'caption_text' => addslashes((string)$_POST['caption_text]']),
+					'caption_location' => (string)$_POST['caption_location'],
+					'caption_opacity'=>round(((int)$_POST['caption_opacity']/100),2),
+					'caption_bg_colour'=>addslashes((string)$_POST['caption_bg_colour']),
+					'caption_text_colour'=>addslashes((string)$_POST['caption_text_colour']),
 					'order'=> (int)$_POST['image_order'],
 					'file'=>getUploadPath().get_post_meta((int)$_POST['image_post_id'], '_wp_attached_file', true)
 				);
 				$order = preg_match('/^[0-9]*$/',$_POST['image_order']) ? (int)$_POST['image_order'] : 0;
-				add_post_meta((int)$_POST['image_post_id'], '_wps3_image_meta', $imageMeta, true);
-				add_post_meta((int)$_POST['image_post_id'], '_wps3_image_order', (int)$_POST['image_order'], true);
+				add_post_meta((int)$_POST['image_post_id'], '_fs_image_meta', $imageMeta, true);
+				add_post_meta((int)$_POST['image_post_id'], '_fs_image_order', (int)$_POST['image_order'], true);
 				
 				$message = array(
 					'output'=>true,
