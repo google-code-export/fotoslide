@@ -206,7 +206,7 @@ elseif($action == 'gallery-items' && isset($_GET['gid']) && isset($_GET['insert-
 							  array('%s'),
 							  array('%d'));
 				
-				// update post meta with specifics
+				// add post meta with specifics
 				$imageMeta = array(
 					'image_link' => addslashes((string)$_POST['image_link']),
 					'caption_text' => addslashes((string)$_POST['caption_text]']),
@@ -245,20 +245,19 @@ elseif($action == 'gallery-items' && isset($_GET['gid']) && isset($_GET['update'
 			'showform'=>true
 		);
 	} else {
-		$uploadPath = get_option('upload_path').'/';
 		foreach($_POST['Images'] as $image) {
 			$imageMeta = array(
 					'image_link' => addslashes((string)$image['image_link']),
-					'image_text' => addslashes((string)$image['image_text']),
-					'span_location' => (string)$image['span_location'],
-					'span_opacity'=>round(((int)$image['image_span_opacity']/100),2),
-					'span_bg_colour'=>addslashes((string)$image['image_span_colour']),
-					'span_text_colour'=>addslashes((string)$image['image_text_colour']),
+					'caption_text' => addslashes((string)$image['caption_text']),
+					'caption_location' => (string)$image['caption_location'],
+					'caption_opacity'=>round(((int)$image['caption_opacity']/100),2),
+					'caption_bg_colour'=>addslashes((string)$image['caption_bg_colour']),
+					'caption_text_colour'=>addslashes((string)$image['caption_text_colour']),
 					'order'=> (int)$image['order'],
 					'file'=>getUploadPath().get_post_meta((int)$image['post_id'], '_wp_attached_file', true)
 				);
-			update_post_meta((int)$image['post_id'],'_wps3_image_meta',$imageMeta);
-			update_post_meta((int)$image['post_id'],'_wps3_image_order',(int)$image['order']);
+			update_post_meta((int)$image['post_id'],'_fs_image_meta',$imageMeta);
+			update_post_meta((int)$image['post_id'],'_fs_image_order',(int)$image['order']);
 		}
 		
 		$message = array(
@@ -283,7 +282,7 @@ elseif($action == 'gallery-items' && isset($_GET['gid']) && isset($_GET['remove'
 			'showform'=>true
 		);
 	} else {
-		$gallery = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$wpdb->prefix}wps3_galleries WHERE id = %d",array($_GET['gid'])));
+		$gallery = $wpdb->get_row($wpdb->prepare("SELECT * FROM ".FS_TABLENAME." WHERE id = %d",array($_GET['gid'])));
 		if(!in_array((int)$_GET['remove'], unserialize($gallery->items))) {
 			$message = array(
 				'output'=>true,
@@ -294,14 +293,14 @@ elseif($action == 'gallery-items' && isset($_GET['gid']) && isset($_GET['remove'
 			);
 		} else {
 			$new = array_diff(unserialize($gallery->items),array((int)$_GET['remove']));
-			$wpdb->update($wpdb->prefix.'wps3_galleries',
+			$wpdb->update(FS_TABLENAME,
 						  array('items'=>serialize($new)),
 						  array('id'=>$gallery->id),
 						  array('%s'),
 						  array('%d'));
 			
-			delete_post_meta((int)$_GET['remove'], '_wps3_image_meta');
-			delete_post_meta((int)$_GET['remove'], '_wps3_image_order');
+			delete_post_meta((int)$_GET['remove'], '_fs_image_meta');
+			delete_post_meta((int)$_GET['remove'], '_fs_image_order');
 			
 			$message = array(
 				'output'=>true,
