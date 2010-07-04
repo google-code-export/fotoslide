@@ -208,7 +208,7 @@ if($message['action'] == 'delete-gallery' && $message['showform'] == true) : ?>
 /**
  * SHOW GALLERY ITEMS
  */
-$gallery = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$wpdb->prefix}wps3_galleries WHERE id = %d", array($_GET['gid'])));
+$gallery = $wpdb->get_row($wpdb->prepare("SELECT * FROM ".FS_TABLENAME." WHERE id = %d", array($_GET['gid'])));
 $items = array();
 
 if($gallery) {
@@ -256,19 +256,19 @@ if(count($items) > 0) {
   </tr>
   <tr valign="top" id="image-select">
     <th scope="row">&nbsp;</th>
-    <td><a href="<?php echo WP_PLUGIN_URL; ?>/wps3slider/wps3medialist.php?&amp;gid=<?php echo $gallery->id; ?>&amp;TB_iframe=true&amp;height=620&amp;width=700&amp;modal=true" class="button-secondary thickbox" id="select-media"><?php _e('Select Image From Media Library'); ?></a></td>
+    <td><a href="<?php echo WP_PLUGIN_URL; ?>/fotoslide/fs_medialibrary.php?&amp;gid=<?php echo $gallery->id; ?>&amp;TB_iframe=true&amp;height=620&amp;width=700&amp;modal=true" class="button-secondary thickbox" id="select-media"><?php _e('Select Image From Media Library'); ?></a></td>
   </tr>
   <tr valign="top">
     <th scope="row"><label for="image_link"><?php _e('Image Link'); ?></label></th>
     <td><input type="text" name="image_link" id="image_link" class="regular-text" value="" /></td>
   </tr>
   <tr valign="top">
-    <th scope="row"><label for="image_text"><?php _e('Caption Message'); ?></label></th>
-    <td><input type="text" name="image_text" id="image_text" class="regular-text" value="" /></td>
+    <th scope="row"><label for="caption_text"><?php _e('Caption Message'); ?></label></th>
+    <td><input type="text" name="caption_text" id="caption_text" class="regular-text" value="" /></td>
   </tr>
   <tr valign="top">
-    <th scope="row"><label for="image_span_location"><?php _e('Caption Location'); ?></label></th>
-    <td><select name="image_span_location" id="image_span_location">
+    <th scope="row"><label for="caption_location"><?php _e('Caption Location'); ?></label></th>
+    <td><select name="caption_location" id="caption_location">
     	<option value="top"><?php _e('Top'); ?></option>
         <option value="right"><?php _e('Right'); ?></option>
         <option value="bottom"><?php _e('Bottom'); ?></option>
@@ -276,20 +276,20 @@ if(count($items) > 0) {
     </select></td>
   </tr>
   <tr valign="top">
-    <th scope="row"><label for="image_span_opacity"><?php _e('Caption Opacity'); ?></label></th>
-    <td><select name="image_span_opacity" id="image_span_opacity">
+    <th scope="row"><label for="caption_opacity"><?php _e('Caption Opacity'); ?></label></th>
+    <td><select name="caption_opacity" id="caption_opacity">
     	<?php for($i=5; $i<=100; $i = ($i+5)) : ?>
         <option value="<?php echo $i; ?>"<?php if($i==70) : ?> selected="selected"<?php endif; ?>><?php _e($i . '%'); ?></option>
         <?php endfor; ?>
     </select></td>
   </tr>
   <tr valign="top">
-    <th scope="row"><label for="image_span_colour"><?php _e('Caption Background Colour'); ?></label></th>
-    <td><input type="text" name="image_span_colour" id="image_span_colour" class="regular-text" value="" /></td>
+    <th scope="row"><label for="caption_bg_colour"><?php _e('Caption Background Colour'); ?></label></th>
+    <td><input type="text" name="caption_bg_colour" id="caption_bg_colour" class="regular-text" value="" /></td>
   </tr>
   <tr valign="top">
-    <th scope="row"><label for="image_text_colour"><?php _e('Text Colour'); ?></label></th>
-    <td><input type="text" name="image_text_colour" id="image_text_colour" class="regular-text" value="" /></td>
+    <th scope="row"><label for="caption_text_colour"><?php _e('Text Colour'); ?></label></th>
+    <td><input type="text" name="caption_text_colour" id="caption_text_colour" class="regular-text" value="" /></td>
   </tr>
   <tr valign="top">
     <th scope="row"><label for="image_order"><?php _e('Order'); ?></label></th>
@@ -314,7 +314,7 @@ if(count($items) > 0) {
     	<h3><?php _e('Gallery Images'); ?></h3>
     </div>
 	<div class="alignright">
-      <a href="#" class="button-secondary add-image-to-gallery">Add a new image to this gallery</a>
+      <a href="#" class="button-secondary add-image-to-gallery"><?php _e('Add an image to this gallery'); ?></a>
     </div>
 </div>
 <form method="post" action="<?php echo WP_PLUGIN_BASE_URL; ?>&amp;action=gallery-items&amp;gid=<?php echo $gallery->id; ?>&amp;update=">
@@ -380,7 +380,9 @@ if(count($items) > 0) {
     
   <?php else : ?>
     <tr>
-      <td colspan="9"><?php _e('There are currently no images in this gallery'); ?></td>
+      <td colspan="9" class="empty-table-data"><p><?php _e('There are currently no images in this gallery'); ?></p>
+      <p><a href="#" class="button-secondary add-image-to-gallery"><?php _e('Add an image to this gallery'); ?></a></p>
+      </td>
     </tr>
   <?php endif; ?>
   </tbody>
