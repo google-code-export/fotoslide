@@ -78,7 +78,7 @@ register_activation_hook(__FILE__, 'fs_activation');
  */
 function fs_register_scripts()
 {
-	wp_register_script('intelislide', WP_PLUGIN_URL . '/wps3slider/assets/intelislide.jquery.min.js', array('jquery'), '1.0',false);
+	wp_register_script('intelislide', WP_PLUGIN_URL . '/fotoslide/assets/intelislide.jquery.min.js', array('jquery'), '1.0',false);
 	wp_enqueue_script('intelislide');
 }
 add_action('init','fs_register_scripts');
