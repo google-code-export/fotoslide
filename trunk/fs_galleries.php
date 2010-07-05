@@ -295,7 +295,7 @@ if(count($items) > 0) {
     <th scope="row"><label for="image_order"><?php _e('Order'); ?></label></th>
     <td><select name="image_order">
     	<?php for($i=1;$i<=count($items)+1; $i++) : ?>
-    	<option value="<?php echo $i; ?>"><?php echo $i; ?></option>
+    	<option value="<?php echo $i; ?>"<?php if($i==(count($items)+1)) : ?> selected="selected"<?php endif; ?>><?php echo $i; ?></option>
     	<?php endfor; ?>
     </select></td>
   </tr>

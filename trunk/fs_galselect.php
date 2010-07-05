@@ -64,7 +64,7 @@ if($total > 0) {
 	$p = new pagination;
 	$currentPage = isset($_GET['paging']) ? (int)$_GET['paging'] : 1;
 	$p->items($total);
-	$p->limit(5);
+	$p->limit(10);
 	$p->target(WP_PLUGIN_URL.'/fotoslide/fs_galselect.php');
 	$p->currentPage($currentPage);
 	$p->parameterName('paging');
@@ -84,9 +84,11 @@ $items = $wpdb->get_results($sql);
 	<div class="tablenav">
 		<div class="alignleft">
 	    	<h3><?php _e('FotoSlide Galleries'); ?></h3>
+	    	<p><?php _e('Copy and paste the code of the gallery into the editor to show it on your page');?></p>
 	    </div>
 		<div class="tablenav-pages"><?php echo isset($p) ? $p->show() : ''; ?></div>
 	</div>
+	<form method="post" action="">
 	<table class="widefat">
 	  <thead>
 	    <tr>
@@ -96,7 +98,7 @@ $items = $wpdb->get_results($sql);
 	      <th scope="col" class="manage-column"><?php _e('Size (w x h)'); ?></th>
 	      <th scope="col" class="manage-column"><?php _e('Timeout'); ?></th>
 	      <th scope="col" class="manage-column"><?php _e('Transition Speed'); ?></th>
-	      <th scope="col" class="manage-column"><?php _e('Actions'); ?></th>
+	      <th scope="col" class="manage-column"><?php _e('Code'); ?></th>
 	    </tr>
 	  </thead>
 	  <tfoot>
@@ -107,21 +109,21 @@ $items = $wpdb->get_results($sql);
 	      <th scope="col" class="manage-column"><?php _e('Size (w x h)'); ?></th>
 	      <th scope="col" class="manage-column"><?php _e('Timeout'); ?></th>
 	      <th scope="col" class="manage-column"><?php _e('Transition Speed'); ?></th>
-	      <th scope="col" class="manage-column"><?php _e('Actions'); ?></th>
+	      <th scope="col" class="manage-column"><?php _e('Code'); ?></th>
 	    </tr>
 	  </tfoot>
-	  <tbody class="list:post">
+	  <tbody>
 	  <?php if($items && (count($items) > 0)) : ?>
 	    
 	    <?php foreach($items as $gallery) : ?>
-	    <tr>
+	    <tr id="fs-<?php echo $gallery->id; ?>">
 	      <td><?php echo $gallery->id; ?></td>
 	      <td><?php echo stripslashes($gallery->gallery_name); ?></td>
 	      <td><?php echo count(unserialize($gallery->items)); ?></td>
 	      <td><?php echo $gallery->width . ' x ' . $gallery->height; ?></td>
 	      <td><?php echo $gallery->timeout; ?></td>
 	      <td><?php echo $gallery->transition_speed; ?></td>
-	      <td>&nbsp;</td>
+	      <td><input type="text" class="code" value='<?php _e('[fs id="' . $gallery->id . '"]')?>' /></td>
 	    </tr>
 	    <?php endforeach; ?>
 	    
@@ -132,7 +134,19 @@ $items = $wpdb->get_results($sql);
 	  <?php endif; ?>
 	  </tbody>
 	</table>
+	</form>
+	<div class="tablenav">
+		<div class="tablenav-pages"><?php echo isset($p) ? $p->show() : ''; ?></div>
+	</div>
 </div>
-
+<script type="text/javascript">
+//<![CDATA[
+jQuery(document).ready(function($) {
+	$('input.code').click(function() {
+		$(this).select();
+	});
+});
+//]]>
+</script>
 </body>
 </html>
