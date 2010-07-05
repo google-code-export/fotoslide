@@ -82,7 +82,7 @@ function fs_admin_footer()
     <script type="text/javascript">
 	//<![CDATA[
 	jQuery(document).ready(function($) {
-		$('#fs-tabs').tabs();
+		$('#fs-tabs').tabs({selected:0});
 		<?php if(isset($_GET['gid'])) : ?>
 		$('tr#fs-gallery-<?php echo (int)$_GET['gid']; ?>').addClass('selected');
 		<?php endif; ?>

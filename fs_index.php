@@ -155,7 +155,7 @@ function fs_prepare_js( $galleries = array() )
 		jQuery(document).ready(function($) {
 			<?php foreach($galleries as $gallery) : ?>
 			
-			$("#intelislide-<?php echo $gallery->id; ?>").intelislide({width:<?php echo $gallery->width; ?>,height:<?php echo $gallery->height; ?>,tagType:'span',transitionSpeed:<?php echo $gallery->transition_speed; ?>,timeout:<?php echo $gallery->timeout; ?>});
+			$("#fotoslide-<?php echo $gallery->id; ?>").intelislide({width:<?php echo $gallery->width; ?>,height:<?php echo $gallery->height; ?>,tagType:'span',transitionSpeed:<?php echo $gallery->transition_speed; ?>,timeout:<?php echo $gallery->timeout; ?>});
 			<?php endforeach; ?>
 			
 		});
