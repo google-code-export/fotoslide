@@ -45,7 +45,7 @@ function fs_render_slider( $gid )
 		return false;
 	
 
-	$ret = "\t\n\n<span id=\"intelislide-{$gid}\" class=\"intelislide\">\n";
+	$ret = "\t\n\n<span id=\"fotoslide-{$gid}\" class=\"fotoslide\">\n";
 	
 	// loop through
 	foreach($images as $image) {
