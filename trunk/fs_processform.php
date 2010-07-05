@@ -29,9 +29,14 @@ if($action == 'delete-gallery' && isset($_GET['confirm']) && isset($_GET['gid'])
 			'showform'=>true
 		);
 	} else {
-		
-		// process gallery deletion
-		if($wpdb->query($wpdb->prepare("DELETE FROM ".FS_TABLENAME." WHERE id= %d",array($_GET['gid'])))) {
+		$gallery = $wpdb->get_row($wpdb->prepare("SELECT * FROM ".FS_TABLENAME." WHERE id = %d",array($_GET['gid'])));
+		if($gallery) {
+			// delete unused postmeta
+			$sql = "DELETE FROM $wpdb->postmeta WHERE meta_key LIKE '_fs_%' AND post_id IN(".implode(',',unserialize($gallery->items)).")";
+			$wpdb->query($sql);
+			
+			$sql = "DELETE FROM ".FS_TABLENAME." WHERE id=".$gallery->id;
+			$wpdb->query($sql);
 			$message = array(
 				'output'=>true,
 				'type'=>'success',
@@ -39,11 +44,12 @@ if($action == 'delete-gallery' && isset($_GET['confirm']) && isset($_GET['gid'])
 				'action'=>'delete-gallery',
 				'showform'=>false
 			);
-		} else {
+		}else {
+			
 			$message = array(
 				'output'=>true,
 				'type'=>'err',
-				'message'=>'There was a problem deleting the gallery',
+				'message'=>'Invalid gallery selected',
 				'action'=>'delete-gallery',
 				'showform'=>true
 			);

@@ -75,9 +75,9 @@ if($galleryCount > 0) {
       <td><?php echo $gallery->timeout; ?></td>
       <td><?php echo $gallery->transition_speed; ?></td>
       <td>
-      <a href="<?php echo WP_PLUGIN_BASE_URL; ?>&amp;action=edit-gallery&amp;gid=<?php echo $gallery->id; ?>"><img src="<?php echo WP_PLUGIN_URL; ?>/wps3slider/assets/page_white_edit.png" alt="Edit" /></a> &nbsp; 
-      <a href="<?php echo WP_PLUGIN_BASE_URL; ?>&amp;action=delete-gallery&amp;gid=<?php echo $gallery->id; ?>"><img src="<?php echo WP_PLUGIN_URL; ?>/wps3slider/assets/page_white_delete.png" alt="Delete" /></a> &nbsp;
-      <a href="<?php echo WP_PLUGIN_BASE_URL; ?>&amp;action=gallery-items&amp;gid=<?php echo $gallery->id; ?>"><img src="<?php echo WP_PLUGIN_URL; ?>/wps3slider/assets/photos.png" alt="Items" /></a>
+      <a href="<?php echo WP_PLUGIN_BASE_URL; ?>&amp;action=edit-gallery&amp;gid=<?php echo $gallery->id; ?>"><img src="<?php echo WP_PLUGIN_URL; ?>/fotoslide/assets/page_white_edit.png" alt="Edit" /></a> &nbsp; 
+      <a href="<?php echo WP_PLUGIN_BASE_URL; ?>&amp;action=delete-gallery&amp;gid=<?php echo $gallery->id; ?>"><img src="<?php echo WP_PLUGIN_URL; ?>/fotoslide/assets/page_white_delete.png" alt="Delete" /></a> &nbsp;
+      <a href="<?php echo WP_PLUGIN_BASE_URL; ?>&amp;action=gallery-items&amp;gid=<?php echo $gallery->id; ?>"><img src="<?php echo WP_PLUGIN_URL; ?>/fotoslide/assets/photos.png" alt="Items" /></a>
       </td>
     </tr>
     <?php endforeach; ?>
