@@ -311,7 +311,7 @@ if(count($items) > 0) {
 <hr />
 <div class="tablenav">
 	<div class="alignleft">
-    	<h3><?php _e('Gallery Images'); ?></h3>
+    	<h3><?php _e('Gallery Images for &#8220;' . $gallery->gallery_name . '&#8221; gallery'); ?></h3>
     </div>
 	<div class="alignright">
       <a href="#" class="button-secondary add-image-to-gallery"><?php _e('Add an image to this gallery'); ?></a>
