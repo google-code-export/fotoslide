@@ -30,13 +30,13 @@ function fs_main_menu()
               <li><a href="#fs-tab-2"><?php _e('Documentation'); ?></a></li>
             </ul>
             
-            <!-- WPS3 Galleries -->
+            <!-- FotoSlide Galleries -->
             <div id="fs-tab-1">
             <?php require_once(dirname(__FILE__).'/fs_galleries.php'); ?>
             </div>
             <!-- END GALLERIES -->
             
-            <!-- WPS3 Documentation -->
+            <!-- FotoSlide Documentation -->
             <div id="fs-tab-2">
             <?php require_once(dirname(__FILE__).'/fs_doc.php'); ?>
             </div>

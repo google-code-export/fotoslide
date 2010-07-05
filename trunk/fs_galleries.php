@@ -17,7 +17,7 @@ if($galleryCount > 0) {
 	$currentPage = isset($_GET['paging']) ? $_GET['paging'] : 1;
 	$p->items($galleryCount);
 	$p->limit(5);
-	$p->target('upload.php?page=wps3slider');
+	$p->target('upload.php?page=fotoslide');
 	$p->currentPage($currentPage);
 	$p->parameterName('paging');
 	$p->adjacents(1);

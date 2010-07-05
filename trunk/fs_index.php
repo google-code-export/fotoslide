@@ -3,7 +3,7 @@ ini_set('display_errors','on');
 
 /*
 Plugin Name: FotoSlide
-Plugin URI: http://www.kevinbradwick.co.uk/2010/06/wps3slider-plugin-for-wordpress/ 
+Plugin URI: http://www.kevinbradwick.co.uk/2010/07/fotoslide-plugin-for-wordpress/ 
 Description: A plugin that renders multiple slideshows on your site
 Version: 1.0
 Author: Kevin Bradwick <kbradwick@gmail.com>
@@ -86,8 +86,8 @@ add_action('init','fs_register_scripts');
 /**
  * Register shortcode
  *
- * This adds the shortcode wps3 to the system so that
- * you can use the wps3 shortcode tag in the theme
+ * This adds the shortcode fs to the system so that
+ * you can use the fs shortcode tag in the theme
  * files.
  *
  * @param	array
