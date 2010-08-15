@@ -2,8 +2,8 @@
 Author: kbradwick
 Tags: wps3slider, photos, image gallery, carousel, jquery, slideshow
 Requires at least: 2.7
-Tested up to: 3.0
-Stable tag: 1.0
+Tested up to: 3.0.1
+Stable tag: 1.1
 
 A plugin to render multiple slideshows on your site
 
@@ -23,6 +23,10 @@ please visit the page at http://code.google.com/p/fotoslide/.
 4. Galleries can be created and managed from Media > FotoSlide
 
 == Changelog ==
+
+= 1.1 =
+* Fixed admin layout for lower resolution screen sizes
+* Gallery degrades properly when JavaScript is off
 
 = 1.0 =
 * The initial release
