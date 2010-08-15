@@ -347,7 +347,7 @@ if(count($items) > 0) {
   
   <!-- gallery thumbnail -->
   <div class="fs-gal-item-thumbnail">
-  <?php echo wp_get_attachment_image($image['post_id'],array(160,160));?>
+  <?php echo wp_get_attachment_image($image['post_id'],array(100,100));?>
   </div>
   
   <!-- gallery input elements -->
