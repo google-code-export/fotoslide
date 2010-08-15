@@ -1,5 +1,5 @@
 <div class="docu">
-<h1>FotoSlide</h1>
+<h1><?php _e('Fotoslide'); ?></h1>
 <p><?php _e('FotoSlide provides a simple way to present your photos in a gallery using your existing WordPress Media Library. It is a project that was developed as a branch of <a href="http://code.google.com/p/wps3slider/">WPS3Slider</a>. Through all the feedback that was received from this plugin, I decided to re-write the plugin from the ground up, starting with a new <a href="http://code.google.com/p/intelislide/">jQuery plugin</a> that was more flexible than the s3Slider used in WPS3Slider. The result is a more robust WordPress plugin that integrates with WP seamlessley.')?></p>
 
 <h2><?php _e('Creating Galleries'); ?></h2>
@@ -22,8 +22,7 @@
   <li><?php _e('<strong>Caption Message:</strong> (optional) A caption for the image.')?></li>
   <li><?php _e('<strong>Caption Location:</strong> (optional) Where the caption will appear over the image.')?></li>
   <li><?php _e('<strong>Caption Opacity:</strong> (optional) The opacity of the caption.')?></li>
-  <li><?php _e('<strong>Caption Background Colour:</strong> (optional) A hex value of the caption background colour')?></li>
-  <li><?php _e('<strong>Text Colour:</strong> (optional) A hex value of the caption text colour.')?></li>
+  <li><?php _e('<strong>Colours:</strong> (optional) Specify colour values for caption background colour and text colour')?></li>
   <li><?php _e('<strong>Order:</strong> The order of the image')?></li>
 </ul>
 <h2><?php _e('Adding galleries to your pages/posts')?></h2>
@@ -47,5 +46,5 @@ do_shortcode('[fs id="{ID}"'); // where {ID} is the gallery id
 </code>
 <p><?php _e('So you can target individual galleries with the id attribute or provide styles across all galleries with the \'fotoslide\' class')?></p>
 <h2><?php _e('Issues and bugs'); ?></h2>
-<p><?php _e('This project is being managed on google code so if you come across any issues or have a feature request, please direct it to <a href="http://code.google.com/p/fotoslide/issues/list">http://code.google.com/p/fotoslide/issues/list</a>')?></p>
+<p><?php _e('This project is being managed on google code so if you come across any issues or have a feature request, please direct them to <a href="http://code.google.com/p/fotoslide/issues/list">http://code.google.com/p/fotoslide/issues/</a>')?></p>
 </div>
