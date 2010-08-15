@@ -318,6 +318,12 @@ if(count($items) > 0) {
     </div>
 </div>
 <br />
+
+<div class="tablenav">
+	<div class="alignleft">
+      <input type="submit" class="button-primary" value="Save changes to this gallery" />
+    </div>
+</div>
 <form method="post" action="<?php echo WP_PLUGIN_BASE_URL; ?>&amp;action=gallery-items&amp;gid=<?php echo $gallery->id; ?>&amp;update=">
 <?php wp_nonce_field('update-gallery-items'); ?>
 <?php if(isset($images)) : $i=0; $class = 'alt'; foreach($images as $image) : ?>

@@ -44,8 +44,9 @@ function fs_render_slider( $gid )
 	if(!$images)
 		return false;
 	
-
-	$ret = "\t\n\n<span id=\"fotoslide-{$gid}\" class=\"fotoslide\">\n";
+	$style = 'width:'.$gallery->width.'px; height:'.$gallery->height.'px; overflow:hidden; display:block';
+	
+	$ret = "\t\n\n<span id=\"fotoslide-{$gid}\" class=\"fotoslide\" style=\"{$style}\">\n";
 	
 	// loop through
 	foreach($images as $image) {
