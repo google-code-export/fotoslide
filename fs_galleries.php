@@ -42,23 +42,23 @@ if($galleryCount > 0) {
 <table class="widefat fixed" cellspacing="0">
   <thead>
     <tr>
-      <th scope="col" width="25px" class="manage-column"><?php _e('ID'); ?></th>
+      <th scope="col" width="25px" class="manage-column"><?php _e('#'); ?></th>
       <th scope="col" class="manage-column"><?php _e('Gallery Name'); ?></th>
       <th scope="col" class="manag-column"><?php _e('Image count'); ?></th>
       <th scope="col" class="manage-column"><?php _e('Size (w x h)'); ?></th>
       <th scope="col" class="manage-column"><?php _e('Timeout'); ?></th>
-      <th scope="col" class="manage-column"><?php _e('Transition Speed'); ?></th>
+      <th scope="col" class="manage-column"><?php _e('Speed'); ?></th>
       <th scope="col" class="manage-column"><?php _e('Actions'); ?></th>
     </tr>
   </thead>
   <tfoot>
     <tr>
-      <th scope="col" width="25px" class="manage-column"><?php _e('ID'); ?></th>
+      <th scope="col" width="25px" class="manage-column"><?php _e('#'); ?></th>
       <th scope="col" class="manage-column"><?php _e('Gallery Name'); ?></th>
       <th scope="col" class="manag-column"><?php _e('Image count'); ?></th>
       <th scope="col" class="manage-column"><?php _e('Size (w x h)'); ?></th>
       <th scope="col" class="manage-column"><?php _e('Timeout'); ?></th>
-      <th scope="col" class="manage-column"><?php _e('Transition Speed'); ?></th>
+      <th scope="col" class="manage-column"><?php _e('Speed'); ?></th>
       <th scope="col" class="manage-column"><?php _e('Actions'); ?></th>
     </tr>
   </tfoot>
@@ -317,76 +317,75 @@ if(count($items) > 0) {
       <a href="#" class="button-secondary add-image-to-gallery"><?php _e('Add an image to this gallery'); ?></a>
     </div>
 </div>
+<br />
 <form method="post" action="<?php echo WP_PLUGIN_BASE_URL; ?>&amp;action=gallery-items&amp;gid=<?php echo $gallery->id; ?>&amp;update=">
 <?php wp_nonce_field('update-gallery-items'); ?>
-<table class="widefat fixed" cellspacing="0">
-  <thead>
-    <tr>
-      <th scope="col"><?php _e('Thumbnail'); ?></th>
-      <th scope="col"><?php _e('Image Link'); ?></th>
-      <th scope="col"><?php _e('Caption'); ?></th>
-      <th scope="col"><?php _e('Location'); ?></th>
-      <th scope="col"><?php _e('Opacity'); ?></th>
-      <th scope="col"><?php _e('Caption Colour'); ?></th>
-      <th scope="col"><?php _e('Text Colour'); ?></th>
-      <th scope="col"><?php _e('Order'); ?></th>
-      <th scope="col"><?php _e(' '); ?></th>
-    </tr>
-  </thead>
-  <tfoot>
-    <tr>
-      <th scope="col"><?php _e('Thumbnail'); ?></th>
-      <th scope="col"><?php _e('Image Link'); ?></th>
-      <th scope="col"><?php _e('Caption'); ?></th>
-      <th scope="col"><?php _e('Location'); ?></th>
-      <th scope="col"><?php _e('Opacity'); ?></th>
-      <th scope="col"><?php _e('Caption Colour'); ?></th>
-      <th scope="col"><?php _e('Text Colour'); ?></th>
-      <th scope="col"><?php _e('Order'); ?></th>
-      <th scope="col"><?php _e(' '); ?></th>
-    </tr>
-  </tfoot>
-  <tbody>
-  <?php if(isset($images)) : ?>
-  	<!-- start items loop -->
-    <?php $class = ''; $i = 0; foreach($images as $image) : $class = 'alternate' == $class ? '' : 'alternate'; ?>
-    <tr class="<?php echo $class; ?>">
-      <td><?php echo wp_get_attachment_image($image['post_id'],array(70,70));?></td>
-      <td><input type="text" name="Images[<?php echo $i; ?>][image_link]" value="<?php echo stripslashes($image['image_link']); ?>" class="regular-text" />
-      <input type="hidden" name="Images[<?php echo $i; ?>][post_id]" value="<?php echo $image['post_id']; ?>" /></td>
-      <td><textarea name="Images[<?php echo $i; ?>][caption_text]" cols="35" rows="4"><?php echo stripslashes($image['caption_text']); ?></textarea></td>
-      <td><select name="Images[<?php echo $i; ?>][caption_location]">
-      		<option value="top"<?php if($image['caption_location']=='top'): ?> selected="selected"<?php endif; ?>><?php _e('Top'); ?></option>
-            <option value="right"<?php if($image['caption_location']=='right'): ?> selected="selected"<?php endif; ?>><?php _e('Right'); ?></option>
-            <option value="bottom"<?php if($image['caption_location']=='bottom'): ?> selected="selected"<?php endif; ?>><?php _e('Bottom'); ?></option>
-            <option value="left"<?php if($image['caption_location']=='left'): ?> selected="selected"<?php endif; ?>><?php _e('Left'); ?></option>
-      </select></td>
-	  <td><select name="Images[<?php echo $i; ?>][caption_opacity]" id="image_span_opacity">
-	    	<?php for($ii=5; $ii<=100; $ii = ($ii+5)) : ?>
-	        <option value="<?php echo $ii; ?>"<?php if($ii==((float)$image['caption_opacity']*100)) : ?> selected="selected"<?php endif; ?>><?php _e($ii . '%'); ?></option>
-	        <?php endfor; ?>
-	    </select></td>
-	  <td><input type="text" name="Images[<?php echo $i; ?>][caption_bg_colour]" class="regular-text" value="<?php echo $image['caption_bg_colour']; ?>" /></td>
-	  <td><input type="text" name="Images[<?php echo $i; ?>][caption_text_colour]" class="regular-text" value="<?php echo $image['caption_text_colour']; ?>" /></td>
-      <td><select name="Images[<?php echo $i; ?>][order]">
-      		<?php for($ii=1; $ii<=count($images); $ii++) : ?>
-            <option value="<?php echo $ii; ?>"<?php if((int)$image['order'] == $ii) : ?> selected="selected"<?php endif; ?>><?php echo $ii; ?></option>
-            <?php endfor; ?>
-      </select></td>
-      <td><a href="<?php echo WP_PLUGIN_BASE_URL; ?>&amp;action=gallery-items&gid=<?php echo $_GET['gid']; ?>&amp;remove=<?php echo $image['post_id']; ?>&amp;_wpnonce=<?php echo wp_create_nonce('remove-item'); ?>" class="button-secondary"><?php _e('Remove'); ?></a></td>
-    </tr>
-    <?php $i++; endforeach; ?>
-    <!-- end items loop -->
-    
-  <?php else : ?>
-    <tr>
-      <td colspan="9" class="empty-table-data"><p><?php _e('There are currently no images in this gallery'); ?></p>
-      <p><a href="#" class="button-secondary add-image-to-gallery"><?php _e('Add an image to this gallery'); ?></a></p>
-      </td>
-    </tr>
-  <?php endif; ?>
-  </tbody>
-</table>
+<?php if(isset($images)) : $i=0; $class = 'alt'; foreach($images as $image) : ?>
+<div class="fs-gal-item <?php echo $class; ?>">
+
+  <input type="hidden" name="Images[<?php echo $i; ?>][post_id]" value="<?php echo $image['post_id']; ?>" />
+  
+  <!-- gallery thumbnail -->
+  <div class="fs-gal-item-thumbnail">
+  <?php echo wp_get_attachment_image($image['post_id'],array(160,160));?>
+  </div>
+  
+  <!-- gallery input elements -->
+  <div class="fs-gal-item-elements">
+    <table class="form-table">
+      <tbody>
+        <tr valign="top">
+          <th scope="row"><label for=""><?php _e('Image Link')?></label></th>
+          <td><input type="text" name="Images[<?php echo $i; ?>][image_link]" value="<?php echo stripslashes($image['image_link']); ?>" class="regular-text" /></td>
+        </tr>
+        <tr valign="top">
+          <th scope="row"><label for=""><?php _e('Caption')?></label></th>
+          <td><textarea class="large-text" name="Images[<?php echo $i; ?>][caption_text]" cols="35" rows="10"><?php echo stripslashes($image['caption_text']); ?></textarea></td>
+        </tr>
+        <tr valign="top">
+          <th scope="row"><label for=""><?php _e('Location')?></label></th>
+          <td><select name="Images[<?php echo $i; ?>][caption_location]">
+		      		<option value="top"<?php if($image['caption_location']=='top'): ?> selected="selected"<?php endif; ?>><?php _e('Top'); ?></option>
+		            <option value="right"<?php if($image['caption_location']=='right'): ?> selected="selected"<?php endif; ?>><?php _e('Right'); ?></option>
+		            <option value="bottom"<?php if($image['caption_location']=='bottom'): ?> selected="selected"<?php endif; ?>><?php _e('Bottom'); ?></option>
+		            <option value="left"<?php if($image['caption_location']=='left'): ?> selected="selected"<?php endif; ?>><?php _e('Left'); ?></option>
+		      </select>
+      	  </td>
+        </tr>
+        <tr valign="top">
+          <th scope="row"><label for=""><?php _e('Opacity')?></label></th>
+          <td><select name="Images[<?php echo $i; ?>][caption_opacity]" id="image_span_opacity">
+		    	<?php for($ii=5; $ii<=100; $ii = ($ii+5)) : ?>
+		        <option value="<?php echo $ii; ?>"<?php if($ii==((float)$image['caption_opacity']*100)) : ?> selected="selected"<?php endif; ?>><?php _e($ii . '%'); ?></option>
+		        <?php endfor; ?>
+		    </select>
+	      </td>
+        </tr>
+        <tr valign="top">
+          <th scope="row"><label for=""><?php _e('Colours (Caption/Text)')?></label></th>
+          <td><input type="text" name="Images[<?php echo $i; ?>][caption_bg_colour]" class="regular-text" value="<?php echo $image['caption_bg_colour']; ?>" /> / 
+          	  <input type="text" name="Images[<?php echo $i; ?>][caption_text_colour]" class="regular-text" value="<?php echo $image['caption_text_colour']; ?>" />
+          </td>
+        </tr>
+        <tr valign="top">
+          <th scope="row"><label for=""><?php _e('Order')?></label></th>
+          <td><select name="Images[<?php echo $i; ?>][order]">
+		      		<?php for($ii=1; $ii<=count($images); $ii++) : ?>
+		            <option value="<?php echo $ii; ?>"<?php if((int)$image['order'] == $ii) : ?> selected="selected"<?php endif; ?>><?php echo $ii; ?></option>
+		            <?php endfor; ?>
+		      </select>
+      	  </td>
+        </tr>
+        <tr valign="top">
+          <th scope="row">&nbsp;</th>
+          <td><a href="<?php echo WP_PLUGIN_BASE_URL; ?>&amp;action=gallery-items&gid=<?php echo $_GET['gid']; ?>&amp;remove=<?php echo $image['post_id']; ?>&amp;_wpnonce=<?php echo wp_create_nonce('remove-item'); ?>" class="button-secondary"><?php _e('Remove'); ?></a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+</div>
+<?php $class = $class == 'alt' ? '' : 'alt'; $i++; endforeach; endif; ?>
 
 <div class="tablenav">
 	<div class="alignleft">
