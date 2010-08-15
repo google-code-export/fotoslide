@@ -26,7 +26,7 @@ div.fs-gal-item {
 	-webkit-border-radius:10px;
 }
 div.fs-gal-item.alt { background-color:#f4f4f4 !important; }
-div.fs-gal-item-thumbnail { width:160px; float:left; margin:10px; }
+div.fs-gal-item-thumbnail { width:100px; float:left; margin:10px; }
 div.fs-gal-item-elements { float:left; }
 
 
