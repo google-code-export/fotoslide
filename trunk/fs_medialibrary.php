@@ -61,11 +61,11 @@ if (!current_user_can('manage_options'))
 <?php
 
 // do pagination
-$sql = "SELECT COUNT(*) AS total FROM $wpdb->posts WHERE post_type='attachment' AND post_mime_type LIKE 'image%'";
+$sql = "SELECT COUNT(*) AS total FROM $wpdb->posts WHERE post_type='attachment' AND post_mime_type LIKE 'image%' ORDER BY post_date DESC";
 if(isset($_GET['gid'])) {
 	$gallery = $wpdb->get_row($wpdb->prepare("SELECT * FROM ".FS_TABLENAME." WHERE id = %d",array($_GET['gid'])));
 	if($gallery && (count(unserialize($gallery->items)) > 0)) {
-		$sql .= " AND ID NOT IN(".implode(',',unserialize($gallery->items)).")";
+		$sql = str_replace('ORDER BY post_date DESC', " AND ID NOT IN(".implode(',',unserialize($gallery->items)).")", $sql).' ORDER BY post_date DESC';
 	}
 }
 

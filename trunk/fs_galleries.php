@@ -309,6 +309,7 @@ if(count($items) > 0) {
 </div><!-- new-gallery-image-form -->
 <div class="clear"></div><br class="clear" /><p>&nbsp;</p>
 <hr />
+<?php if(isset($images)) :?>
 <div class="tablenav">
 	<div class="alignleft">
     	<h3><?php _e('Gallery Images for &#8220;' . $gallery->gallery_name . '&#8221; gallery'); ?></h3>
@@ -317,15 +318,28 @@ if(count($items) > 0) {
       <a href="#" class="button-secondary add-image-to-gallery"><?php _e('Add an image to this gallery'); ?></a>
     </div>
 </div>
+<?php else : ?>
+<div class="tablenav">
+  <div class="alignleft">
+    <h3><?php _e('This gallery is currently has no images'); ?></h3>
+  </div>
+  <div class="alignright">
+      <a href="#" class="button-secondary add-image-to-gallery"><?php _e('Add an image to this gallery'); ?></a>
+    </div>
+</div>
+<?php endif; ?>
 <br />
 
+
+<form method="post" action="<?php echo WP_PLUGIN_BASE_URL; ?>&amp;action=gallery-items&amp;gid=<?php echo $gallery->id; ?>&amp;update=">
+<?php wp_nonce_field('update-gallery-items'); ?>
+<?php if(isset($images)) : ?>
 <div class="tablenav">
 	<div class="alignleft">
       <input type="submit" class="button-primary" value="Save changes to this gallery" />
     </div>
 </div>
-<form method="post" action="<?php echo WP_PLUGIN_BASE_URL; ?>&amp;action=gallery-items&amp;gid=<?php echo $gallery->id; ?>&amp;update=">
-<?php wp_nonce_field('update-gallery-items'); ?>
+<?php endif; ?>
 <?php if(isset($images)) : $i=0; $class = 'alt'; foreach($images as $image) : ?>
 <div class="fs-gal-item <?php echo $class; ?>">
 
@@ -393,6 +407,7 @@ if(count($items) > 0) {
 </div>
 <?php $class = $class == 'alt' ? '' : 'alt'; $i++; endforeach; endif; ?>
 
+<?php if(isset($images)) : ?>
 <div class="tablenav">
 	<div class="alignleft">
       <input type="submit" class="button-primary" value="Save changes to this gallery" />
@@ -401,6 +416,7 @@ if(count($items) > 0) {
     	<a href="#" class="button-secondary add-image-to-gallery">Add a new image to this gallery</a>
     </div>
 </div>
+<?php endif; ?>
 </form>
 <div class="clear"></div><br class="clear" />
 <script type="text/javascript">
