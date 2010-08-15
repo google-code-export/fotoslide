@@ -27,6 +27,7 @@ please visit the page at http://code.google.com/p/fotoslide/.
 = 1.1 =
 * Fixed admin layout for lower resolution screen sizes
 * Gallery degrades properly when JavaScript is off
+* Updated documentation
 
 = 1.0 =
 * The initial release
