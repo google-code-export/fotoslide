@@ -83,14 +83,17 @@ elseif($action == 'new-gallery' && isset($_REQUEST['_wpnonce']) && isset($_GET['
 			$query = $wpdb->insert(FS_TABLENAME,
 							array(
 								'gallery_name'=>$_POST['gallery_name'],
-								'dstamp'=>date('Y-m-d 00:00:00'),
+								'dstamp'=>date('Y-m-d H:i:s'),
 								'width'=>empty($_POST['gallery_width']) ? 400 : (int)$_POST['gallery_width'],
 								'height'=>empty($_POST['gallery_height']) ? 200 : (int)$_POST['gallery_height'],
 								'timeout'=>empty($_POST['gallery_timeout']) ? 4000 : (int)$_POST['gallery_timeout'],
 								'items'=>serialize(array()),
-								'transition_speed'=>empty($_POST['gallery_transition_speed']) ? 1000 : (int)$_POST['gallery_transition_speed']
+								'transition_speed'=>empty($_POST['gallery_transition_speed']) ? 1000 : (int)$_POST['gallery_transition_speed'],
+								'effect'=>$_POST['gallery_transition_effect'],
+								'caption_opacity'=>$_POST['gallery_caption_opacity'],
+								'class_attribute'=>$_POST['gallery_class_attribute']
 							),
-							array('%s','%s','%d','%d','%d','%s','%d')
+							array('%s','%s','%d','%d','%d','%s','%d','%s','%d','%s')
 						);
 			
 			if(!$query) {
@@ -145,10 +148,13 @@ elseif($action=='edit-gallery' && isset($_GET['update']) && isset($_GET['gid']) 
 						'width'=>empty($_POST['gallery_width']) ? 400 : (int)$_POST['gallery_width'],
 						'height'=>empty($_POST['gallery_height']) ? 200 : (int)$_POST['gallery_height'],
 						'timeout'=>empty($_POST['gallery_timeout']) ? 4000 : (int)$_POST['gallery_timeout'],
-						'transition_speed'=>empty($_POST['gallery_transition_speed']) ? 1000 : (int)$_POST['gallery_transition_speed']
+						'transition_speed'=>empty($_POST['gallery_transition_speed']) ? 1000 : (int)$_POST['gallery_transition_speed'],
+						'effect'=>$_POST['gallery_transition_effect'],
+						'caption_opacity'=>$_POST['gallery_caption_opacity'],
+						'class_attribute'=>$_POST['gallery_class_attribute']
 					),
 					array('id'=>$_GET['gid']),
-					array('%s','%d','%d','%d','%d'),
+					array('%s','%d','%d','%d','%d','%s','%d','%s'),
 					array('%d')
 				);
 			
