@@ -76,8 +76,10 @@ register_activation_hook(__FILE__, 'fs_activation');
  */
 function fs_register_scripts()
 {
-	wp_register_script('intelislide', WP_PLUGIN_URL . '/fotoslide/assets/intelislide.jquery.min.js', array('jquery'), '1.0',false);
-	wp_enqueue_script('intelislide');
+	wp_register_script('nivoslider', WP_PLUGIN_URL.'/fotoslide/assets/nivoslider/jquery.nivo.slider.pack.js',array('jquery'));
+	wp_register_style('nivosliderstyle',WP_PLUGIN_URL.'/fotoslide/assets/nivoslider/nivo-slider.css');
+	wp_enqueue_script('nivoslider');
+	wp_enqueue_style('nivosliderstyle');
 }
 add_action('init','fs_register_scripts');
 
