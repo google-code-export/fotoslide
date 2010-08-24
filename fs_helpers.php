@@ -48,6 +48,7 @@ function fs_render_slider( $galleryID )
 	?>
 	<div class="<?php echo $gallery->class_attribute; ?>" id="fotoslide-<?php echo $galleryID; ?>" style="height:420px;">
 	<?php
+	$count = 1;
 	foreach($images as $image) {
 		$meta = unserialize($image->meta);
 		$attributes = 'src="';
@@ -55,18 +56,24 @@ function fs_render_slider( $galleryID )
 		$attributes .= '&amp;w='.$gallery->width.'&amp;h='.$gallery->height.'"';
 		$attributes .= ' alt="Image"';
 		if(!empty($meta['caption_text']))
-			$attributes .= ' title="'.$meta['caption_text'].'"';
-		?>
-		<img <?php echo $attributes; ?> />
-		<?php
+			$attributes .= ' title="#fotoslide-image-'.$gallery->id.'-'.$count.'"';
+		
+		if(!empty($meta['image_link']))
+			echo "<a href='{$meta['image_link']}'><img {$attributes} /></a>";
+		else
+			echo "<img {$attributes} />";
+			
+		$count++;
 	}
 	
 	?>
 	</div>
 	
-	<div id="htmlcaption" class="nivo-html-caption">
-    <strong>This</strong> is an example of a <em>HTML</em> caption with <a href="#">a link</a>.
-</div>
+	<?php $count = 1; foreach($images as $image) : $meta = unserialize($image->meta); if(!empty($meta['caption_text'])) : ?>
+	<div id="fotoslide-image-<?php echo $gallery->id.'-'.$count; ?>" class="nivo-html-caption">
+    	<?php echo stripslashes($meta['caption_text']); ?>
+	</div>
+	<?php endif; $count++; endforeach; ?>
 
 	<script type="text/javascript">
 	//<[CDATA[
