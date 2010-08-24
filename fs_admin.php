@@ -36,6 +36,7 @@ function fs_main_menu()
             </div>
             <!-- END GALLERIES -->
             
+            
             <!-- FotoSlide Documentation -->
             <div id="fs-tab-2">
             <?php require_once(dirname(__FILE__).'/fs_doc.php'); ?>

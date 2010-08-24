@@ -46,24 +46,34 @@ function fs_render_slider( $galleryID )
 		return false;
 	
 	?>
-	<div class="fotoslide" id="fotoslide-<?php echo $galleryID; ?>" style="height:420px;">
+	<div class="<?php echo $gallery->class_attribute; ?>" id="fotoslide-<?php echo $galleryID; ?>" style="height:420px;">
 	<?php
 	foreach($images as $image) {
 		$meta = unserialize($image->meta);
-		$src = WP_PLUGIN_URL.'/fotoslide/timthumb.php?src='.$meta['file'].'&amp;w='.$gallery->width.'&amp;h='.$gallery->height;
+		echo $src;
 		?>
-		<img src="<?php echo $meta['file']; ?>" alt="" />';
+		<img src="<?php echo $meta['file']; ?>" alt="" />
 		<?php
 	}
 	
 	?>
 	</div>
+	
+	<div id="htmlcaption" class="nivo-html-caption">
+    <strong>This</strong> is an example of a <em>HTML</em> caption with <a href="#">a link</a>.
+</div>
+
 	<script type="text/javascript">
 	//<[CDATA[
 	jQuery(document).ready(function($) {
 		$('#fotoslide-<?php echo $galleryID; ?>').nivoSlider({
 				controlNav:false,
-				controlNavThumbs:false
+				controlNavThumbs:false,
+				directionNav:false,
+				effect:"<?php echo $gallery->effect; ?>",
+				captionOpacity:<?php echo number_format(($gallery->caption_opacity / 100),1); ?>,
+				animSpeed:<?php echo $gallery->transition_speed; ?>,
+				pauseTime:<?php echo $gallery->timeout; ?>
 		});
 	});
 	//]]>

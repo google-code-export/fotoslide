@@ -128,13 +128,43 @@ if($galleryCount > 0) {
     <td><input type="text" name="gallery_height" id="gallery_height" class="regular-text" /></td>
   </tr>
   <tr valign="top">
-    <th scope="row"><label for="gallery_timeout"><?php _e('Timeout'); ?></label></th>
+    <th scope="row"><label for="gallery_timeout"><?php _e('Pause'); ?></label></th>
     <td><input type="text" name="gallery_timeout" id="gallery_timeout" class="regular-text" /></td>
   </tr>
   <tr valign="top">
     <th scope="row"><label for="gallery_transition_speed"><?php _e('Transition Speed'); ?></label></th>
     <td><input type="text" name="gallery_transition_speed" id="gallery_transition_speed" class="regular-text" /></td>
   </tr>
+  
+  <!-- since 2.0 -->
+  <tr valign="top">
+    <th scope="row"><label for="gallery_transition_effect"><?php _e('Effect'); ?></label></th>
+    <td><select name="gallery_transition_effect" id="gallery_transition_effect">
+    		<option value="random" selected="selected"><?php _e('Random'); ?></option>
+    		<option value="sliceDown"><?php _e('Slice Down'); ?></option>
+    		<option value="sliceDownLeft"><?php _e('Slice Down Left'); ?></option>
+    		<option value="sliceUp"><?php _e('Slice Up'); ?></option>
+    		<option value="sliceUpLeft"><?php _e('Slice Up Left'); ?></option>
+    		<option value="sliceUpDown"><?php _e('Slice Up Down'); ?></option>
+    		<option value="sliceUpDownLeft"><?php _e('Slice Up Down Left'); ?></option>
+    		<option value="fold"><?php _e('Fold'); ?></option>
+    		<option value="fade"><?php _e('Fade'); ?></option>
+    	</select></td>
+  </tr>
+  <tr valign="top">
+    <th scope="row"><label for="gallery_caption_opacity"><?php _e('Caption Opacity'); ?></label></th>
+    <td><select name="gallery_caption_opacity" id="gallery_caption_opacity">
+    	<?php for($i=5; $i<=100; $i = ($i+5)) : ?>
+        <option value="<?php echo $i; ?>"<?php if($i==70) : ?> selected="selected"<?php endif; ?>><?php _e($i . '%'); ?></option>
+        <?php endfor; ?>
+    </select></td>
+  </tr>
+  <tr valign="top">
+    <th scope="row"><label for="gallery_class_attribute"><?php _e('Class Attribute'); ?></label></th>
+    <td><input type="text" name="gallery_class_attribute" id="gallery_class_attribute" class="regular-text" value="fotoslide" /></td>
+  </tr>
+  
+  
   <tr valign="top">
     <th scope="row">&nbsp;</th>
     <td><input type="submit" class="button-primary" value="<?php _e('Save'); ?>" /></td>
@@ -178,6 +208,35 @@ $gallery = $wpdb->get_row($wpdb->prepare("SELECT * FROM ".FS_TABLENAME." WHERE i
     <th scope="row"><label for="gallery_transition_speed"><?php _e('Transition Speed'); ?></label></th>
     <td><input type="text" name="gallery_transition_speed" id="gallery_transition_speed" class="regular-text" value="<?php echo $gallery->transition_speed; ?>" /></td>
   </tr>
+  
+  <!-- since 2.0 -->
+  <tr valign="top">
+    <th scope="row"><label for="gallery_transition_effect"><?php _e('Effect'); ?></label></th>
+    <td><select name="gallery_transition_effect" id="gallery_transition_effect">
+    		<option value="random"<?php if($gallery->effect == 'random') : ?> selected="selected"<?php endif; ?>><?php _e('Random'); ?></option>
+    		<option value="sliceDown"<?php if($gallery->effect == 'sliceDown') : ?> selected="selected"<?php endif; ?>><?php _e('Slice Down'); ?></option>
+    		<option value="sliceDownLeft"<?php if($gallery->effect == 'sliceDownLeft') : ?> selected="selected"<?php endif; ?>><?php _e('Slice Down Left'); ?></option>
+    		<option value="sliceUp"<?php if($gallery->effect == 'sliceUp') : ?> selected="selected"<?php endif; ?>><?php _e('Slice Up'); ?></option>
+    		<option value="sliceUpLeft"<?php if($gallery->effect == 'sliceUpLeft') : ?> selected="selected"<?php endif; ?>><?php _e('Slice Up Left'); ?></option>
+    		<option value="sliceUpDown"<?php if($gallery->effect == 'sliceUpDown') : ?> selected="selected"<?php endif; ?>><?php _e('Slice Up Down'); ?></option>
+    		<option value="sliceUpDownLeft"<?php if($gallery->effect == 'sliceUpDownLeft') : ?> selected="selected"<?php endif; ?>><?php _e('Slice Up Down Left'); ?></option>
+    		<option value="fold"<?php if($gallery->effect == 'fold') : ?> selected="selected"<?php endif; ?>><?php _e('Fold'); ?></option>
+    		<option value="fade"<?php if($gallery->effect == 'fade') : ?> selected="selected"<?php endif; ?>><?php _e('Fade'); ?></option>
+    	</select></td>
+  </tr>
+  <tr valign="top">
+    <th scope="row"><label for="gallery_caption_opacity"><?php _e('Caption Opacity'); ?></label></th>
+    <td><select name="gallery_caption_opacity" id="gallery_caption_opacity">
+    	<?php for($i=5; $i<=100; $i = ($i+5)) : ?>
+        <option value="<?php echo $i; ?>"<?php if($i==$gallery->caption_opacity) : ?> selected="selected"<?php endif; ?>><?php _e($i . '%'); ?></option>
+        <?php endfor; ?>
+    </select></td>
+  </tr>
+  <tr valign="top">
+    <th scope="row"><label for="gallery_class_attribute"><?php _e('Class Attribute'); ?></label></th>
+    <td><input type="text" name="gallery_class_attribute" id="gallery_class_attribute" class="regular-text" value="<?php echo $gallery->class_attribute; ?>" /></td>
+  </tr>
+  
   <tr valign="top">
     <th scope="row">&nbsp;</th>
     <td><input type="submit" class="button-primary" value="<?php _e('Save'); ?>" /></td>
@@ -267,31 +326,6 @@ if(count($items) > 0) {
     <td><input type="text" name="caption_text" id="caption_text" class="regular-text" value="" /></td>
   </tr>
   <tr valign="top">
-    <th scope="row"><label for="caption_location"><?php _e('Caption Location'); ?></label></th>
-    <td><select name="caption_location" id="caption_location">
-    	<option value="top"><?php _e('Top'); ?></option>
-        <option value="right"><?php _e('Right'); ?></option>
-        <option value="bottom"><?php _e('Bottom'); ?></option>
-        <option value="left"><?php _e('Left'); ?></option>
-    </select></td>
-  </tr>
-  <tr valign="top">
-    <th scope="row"><label for="caption_opacity"><?php _e('Caption Opacity'); ?></label></th>
-    <td><select name="caption_opacity" id="caption_opacity">
-    	<?php for($i=5; $i<=100; $i = ($i+5)) : ?>
-        <option value="<?php echo $i; ?>"<?php if($i==70) : ?> selected="selected"<?php endif; ?>><?php _e($i . '%'); ?></option>
-        <?php endfor; ?>
-    </select></td>
-  </tr>
-  <tr valign="top">
-    <th scope="row"><label for="caption_bg_colour"><?php _e('Caption Background Colour'); ?></label></th>
-    <td><input type="text" name="caption_bg_colour" id="caption_bg_colour" class="regular-text" value="" /></td>
-  </tr>
-  <tr valign="top">
-    <th scope="row"><label for="caption_text_colour"><?php _e('Text Colour'); ?></label></th>
-    <td><input type="text" name="caption_text_colour" id="caption_text_colour" class="regular-text" value="" /></td>
-  </tr>
-  <tr valign="top">
     <th scope="row"><label for="image_order"><?php _e('Order'); ?></label></th>
     <td><select name="image_order">
     	<?php for($i=1;$i<=count($items)+1; $i++) : ?>
@@ -361,31 +395,6 @@ if(count($items) > 0) {
         <tr valign="top">
           <th scope="row"><label for=""><?php _e('Caption')?></label></th>
           <td><textarea class="large-text" name="Images[<?php echo $i; ?>][caption_text]" cols="35" rows="10"><?php echo stripslashes($image['caption_text']); ?></textarea></td>
-        </tr>
-        <tr valign="top">
-          <th scope="row"><label for=""><?php _e('Location')?></label></th>
-          <td><select name="Images[<?php echo $i; ?>][caption_location]">
-		      		<option value="top"<?php if($image['caption_location']=='top'): ?> selected="selected"<?php endif; ?>><?php _e('Top'); ?></option>
-		            <option value="right"<?php if($image['caption_location']=='right'): ?> selected="selected"<?php endif; ?>><?php _e('Right'); ?></option>
-		            <option value="bottom"<?php if($image['caption_location']=='bottom'): ?> selected="selected"<?php endif; ?>><?php _e('Bottom'); ?></option>
-		            <option value="left"<?php if($image['caption_location']=='left'): ?> selected="selected"<?php endif; ?>><?php _e('Left'); ?></option>
-		      </select>
-      	  </td>
-        </tr>
-        <tr valign="top">
-          <th scope="row"><label for=""><?php _e('Opacity')?></label></th>
-          <td><select name="Images[<?php echo $i; ?>][caption_opacity]" id="image_span_opacity">
-		    	<?php for($ii=5; $ii<=100; $ii = ($ii+5)) : ?>
-		        <option value="<?php echo $ii; ?>"<?php if($ii==((float)$image['caption_opacity']*100)) : ?> selected="selected"<?php endif; ?>><?php _e($ii . '%'); ?></option>
-		        <?php endfor; ?>
-		    </select>
-	      </td>
-        </tr>
-        <tr valign="top">
-          <th scope="row"><label for=""><?php _e('Colours (Caption/Text)')?></label></th>
-          <td><input type="text" name="Images[<?php echo $i; ?>][caption_bg_colour]" class="regular-text" value="<?php echo $image['caption_bg_colour']; ?>" /> / 
-          	  <input type="text" name="Images[<?php echo $i; ?>][caption_text_colour]" class="regular-text" value="<?php echo $image['caption_text_colour']; ?>" />
-          </td>
         </tr>
         <tr valign="top">
           <th scope="row"><label for=""><?php _e('Order')?></label></th>

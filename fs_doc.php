@@ -33,7 +33,7 @@
 <h2><?php _e('Adding galleries to theme files'); ?></h2>
 <p><?php _e('This plugin also supports short tags so you can also execute the short code by adding...')?></p>
 <code>
-do_shortcode('[fs id="{ID}"'); // where {ID} is the gallery id
+do_shortcode('[fs id="{ID}"]'); // where {ID} is the gallery id
 </code>
 <h2><?php _e('Providing additional CSS to galleries'); ?></h2>
 <p><?php _e('Each gallery renders with an encapsulating span element with its id value in relation to the gallery id')?></p>
