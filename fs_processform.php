@@ -221,10 +221,6 @@ elseif($action == 'gallery-items' && isset($_GET['gid']) && isset($_GET['insert-
 				$imageMeta = array(
 					'image_link' => addslashes((string)$_POST['image_link']),
 					'caption_text' => addslashes((string)$_POST['caption_text']),
-					'caption_location' => (string)$_POST['caption_location'],
-					'caption_opacity'=>round(((int)$_POST['caption_opacity']/100),2),
-					'caption_bg_colour'=>addslashes((string)$_POST['caption_bg_colour']),
-					'caption_text_colour'=>addslashes((string)$_POST['caption_text_colour']),
 					'order'=> (int)$_POST['image_order'],
 					'file'=>getUploadPath().get_post_meta((int)$_POST['image_post_id'], '_wp_attached_file', true)
 				);
@@ -259,10 +255,6 @@ elseif($action == 'gallery-items' && isset($_GET['gid']) && isset($_GET['update'
 			$imageMeta = array(
 					'image_link' => addslashes((string)$image['image_link']),
 					'caption_text' => addslashes((string)$image['caption_text']),
-					'caption_location' => (string)$image['caption_location'],
-					'caption_opacity'=>round(((int)$image['caption_opacity']/100),2),
-					'caption_bg_colour'=>addslashes((string)$image['caption_bg_colour']),
-					'caption_text_colour'=>addslashes((string)$image['caption_text_colour']),
 					'order'=> (int)$image['order'],
 					'file'=>getUploadPath().get_post_meta((int)$image['post_id'], '_wp_attached_file', true)
 				);
