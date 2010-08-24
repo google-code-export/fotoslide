@@ -50,9 +50,14 @@ function fs_render_slider( $galleryID )
 	<?php
 	foreach($images as $image) {
 		$meta = unserialize($image->meta);
-		echo $src;
+		$attributes = 'src="';
+		$attributes .= WP_PLUGIN_URL.'/fotoslide/timthumb.php?src='.$meta['file'];
+		$attributes .= '&amp;w='.$gallery->width.'&amp;h='.$gallery->height.'"';
+		$attributes .= ' alt="Image"';
+		if(!empty($meta['caption_text']))
+			$attributes .= ' title="'.$meta['caption_text'].'"';
 		?>
-		<img src="<?php echo $meta['file']; ?>" alt="" />
+		<img <?php echo $attributes; ?> />
 		<?php
 	}
 	
