@@ -10,7 +10,8 @@ global $wpdb;
 require_once(dirname(__FILE__).'/fs_processform.php');
 
 // gallery pagination and query
-$galleryCount = (int)$wpdb->get_row("SELECT COUNT(*) as tot FROM ".FS_TABLENAME)->tot;
+$query = $wpdb->get_row("SELECT COUNT(*) as tot FROM ".FS_GALTBL);
+$galleryCount = $query->tot;
 if($galleryCount > 0) {
 	require_once(dirname(__FILE__).'/pagination.class.php');
 	$p = new pagination;
@@ -46,7 +47,7 @@ if($galleryCount > 0) {
       <th scope="col" class="manage-column"><?php _e('Gallery Name'); ?></th>
       <th scope="col" class="manag-column"><?php _e('Image count'); ?></th>
       <th scope="col" class="manage-column"><?php _e('Size (w x h)'); ?></th>
-      <th scope="col" class="manage-column"><?php _e('Timeout'); ?></th>
+      <th scope="col" class="manage-column"><?php _e('Pause'); ?></th>
       <th scope="col" class="manage-column"><?php _e('Speed'); ?></th>
       <th scope="col" class="manage-column"><?php _e('Actions'); ?></th>
     </tr>
@@ -57,7 +58,7 @@ if($galleryCount > 0) {
       <th scope="col" class="manage-column"><?php _e('Gallery Name'); ?></th>
       <th scope="col" class="manag-column"><?php _e('Image count'); ?></th>
       <th scope="col" class="manage-column"><?php _e('Size (w x h)'); ?></th>
-      <th scope="col" class="manage-column"><?php _e('Timeout'); ?></th>
+      <th scope="col" class="manage-column"><?php _e('Pause'); ?></th>
       <th scope="col" class="manage-column"><?php _e('Speed'); ?></th>
       <th scope="col" class="manage-column"><?php _e('Actions'); ?></th>
     </tr>
@@ -66,14 +67,14 @@ if($galleryCount > 0) {
   <?php if($galleryCount > 0) : ?>
   
   	<!-- start gallery loop -->
-    <?php $alt = false; foreach($wpdb->get_results("SELECT * FROM " .FS_TABLENAME.' '.$limit) as $gallery) : ?>
+    <?php $alt = false; foreach($wpdb->get_results("SELECT * FROM " .FS_GALTBL.' '.$limit) as $gallery) : ?>
     <tr id="fs-gallery-<?php echo $gallery->id; ?>" valign="top"<?php if($alt) : ?> class="alternate"<?php endif; $alt = $alt ? false : true; ?>>
       <td><?php echo $gallery->id; ?></td>
       <td><?php echo stripslashes($gallery->gallery_name); ?></td>
       <td><?php echo count(unserialize($gallery->items)); ?></td>
       <td><?php echo $gallery->width . ' x ' . $gallery->height; ?></td>
-      <td><?php echo $gallery->timeout; ?></td>
-      <td><?php echo $gallery->transition_speed; ?></td>
+      <td><?php echo $gallery->pauseTime; ?></td>
+      <td><?php echo $gallery->animSpeed; ?></td>
       <td>
       <a href="<?php echo WP_PLUGIN_BASE_URL; ?>&amp;action=edit-gallery&amp;gid=<?php echo $gallery->id; ?>"><img src="<?php echo WP_PLUGIN_URL; ?>/fotoslide/assets/page_white_edit.png" alt="Edit" /></a> &nbsp; 
       <a href="<?php echo WP_PLUGIN_BASE_URL; ?>&amp;action=delete-gallery&amp;gid=<?php echo $gallery->id; ?>"><img src="<?php echo WP_PLUGIN_URL; ?>/fotoslide/assets/page_white_delete.png" alt="Delete" /></a> &nbsp;
@@ -128,8 +129,8 @@ if($galleryCount > 0) {
     <td><input type="text" name="gallery_height" id="gallery_height" class="regular-text" /></td>
   </tr>
   <tr valign="top">
-    <th scope="row"><label for="gallery_timeout"><?php _e('Pause'); ?></label></th>
-    <td><input type="text" name="gallery_timeout" id="gallery_timeout" class="regular-text" /></td>
+    <th scope="row"><label for="gallery_pause_time"><?php _e('Pause'); ?></label></th>
+    <td><input type="text" name="gallery_pause_time" id="gallery_pause_time" class="regular-text" /></td>
   </tr>
   <tr valign="top">
     <th scope="row"><label for="gallery_transition_speed"><?php _e('Transition Speed'); ?></label></th>
@@ -154,7 +155,7 @@ if($galleryCount > 0) {
   <tr valign="top">
     <th scope="row"><label for="gallery_caption_opacity"><?php _e('Caption Opacity'); ?></label></th>
     <td><select name="gallery_caption_opacity" id="gallery_caption_opacity">
-    	<?php for($i=5; $i<=100; $i = ($i+5)) : ?>
+    	<?php for($i=10; $i<=100; $i = ($i+10)) : ?>
         <option value="<?php echo $i; ?>"<?php if($i==70) : ?> selected="selected"<?php endif; ?>><?php _e($i . '%'); ?></option>
         <?php endfor; ?>
     </select></td>
@@ -180,7 +181,7 @@ if($galleryCount > 0) {
 /**
  * GENERATE AN EDIT GALLERY FORM
  */
-$gallery = $wpdb->get_row($wpdb->prepare("SELECT * FROM ".FS_TABLENAME." WHERE id = %d", array($_GET['gid'])));
+$gallery = $wpdb->get_row($wpdb->prepare("SELECT * FROM ".FS_GALTBL." WHERE id = %d", array($_GET['gid'])));
 ?>
 <p>&nbsp;</p>
 <hr />
@@ -201,12 +202,12 @@ $gallery = $wpdb->get_row($wpdb->prepare("SELECT * FROM ".FS_TABLENAME." WHERE i
     <td><input type="text" name="gallery_height" id="gallery_height" class="regular-text" value="<?php echo $gallery->height; ?>" /></td>
   </tr>
   <tr valign="top">
-    <th scope="row"><label for="gallery_timeout"><?php _e('Timeout'); ?></label></th>
-    <td><input type="text" name="gallery_timeout" id="gallery_timeout" class="regular-text" value="<?php echo $gallery->timeout; ?>" /></td>
+    <th scope="row"><label for="gallery_pause_time"><?php _e('Pause'); ?></label></th>
+    <td><input type="text" name="gallery_pause_time" id="gallery_pause_time" class="regular-text" value="<?php echo $gallery->pauseTime; ?>" /></td>
   </tr>
   <tr valign="top">
     <th scope="row"><label for="gallery_transition_speed"><?php _e('Transition Speed'); ?></label></th>
-    <td><input type="text" name="gallery_transition_speed" id="gallery_transition_speed" class="regular-text" value="<?php echo $gallery->transition_speed; ?>" /></td>
+    <td><input type="text" name="gallery_transition_speed" id="gallery_transition_speed" class="regular-text" value="<?php echo $gallery->animSpeed; ?>" /></td>
   </tr>
   
   <!-- since 2.0 -->
@@ -227,8 +228,8 @@ $gallery = $wpdb->get_row($wpdb->prepare("SELECT * FROM ".FS_TABLENAME." WHERE i
   <tr valign="top">
     <th scope="row"><label for="gallery_caption_opacity"><?php _e('Caption Opacity'); ?></label></th>
     <td><select name="gallery_caption_opacity" id="gallery_caption_opacity">
-    	<?php for($i=5; $i<=100; $i = ($i+5)) : ?>
-        <option value="<?php echo $i; ?>"<?php if($i==$gallery->caption_opacity) : ?> selected="selected"<?php endif; ?>><?php _e($i . '%'); ?></option>
+    	<?php for($i=10; $i<=100; $i = ($i+10)) : ?>
+        <option value="<?php echo $i; ?>"<?php if($i==($gallery->captionOpacity)*100) : ?> selected="selected"<?php endif; ?>><?php _e($i . '%'); ?></option>
         <?php endfor; ?>
     </select></td>
   </tr>
