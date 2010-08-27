@@ -34,7 +34,13 @@ defined('WP_PLUGIN_URL') || define(WP_PLUGIN_URL, WP_CONTENT_URL . '/plugins', t
 define('WP_PLUGIN_BASE_URL', get_bloginfo('url') . '/wp-admin/upload.php?page=fotoslide', true);
 
 // define db table name
-define('FS_TABLENAME', $wpdb->prefix.'fs_galleries', true);
+define('FS_TABLENAME', $wpdb->prefix.'fotoslide_galleries', true);
+
+// define old db table name
+define('FS_OLD_TABLENAME', $wpdb->prefix.'fs_galleries', true);
+
+define('FS_GALTBL',$wpdb->prefix.'fotoslide_galleries',true);
+define('FS_ITEMTBL',$wpdb->prefix.'fotoslide_galleries',true);
 
 // load the helpers
 require_once(dirname(__FILE__).'/fs_helpers.php');
@@ -51,14 +57,44 @@ $pageGalleries = array();
  *
  * Upon registering, the plugin will check for the exsitence of
  * the necessary table and create it if they do not exist
+ * 
+ * @todo new routine needed to test table schema and alter/create
+ * as necessary
  *
  * @return	null
  */
 function fs_activation()
 {
 	global $wpdb;
-	$schema = str_replace('{tablename}', FS_TABLENAME, file_get_contents(dirname(__FILE__).'/assets/schema.sql'));
-	$wpdb->query($schema);
+	
+	list($gallery_schema, $item_schema) = explode('@next',file_get_contents(dirname(__FILE__).'/assets/schema.sql'));
+	$wpdb->query(str_replace('{tablename_galleries}',FS_GALTBL,$gallery_schema));
+	$wpdb->query(str_replace('{tablename_galleries}',FS_ITEMTBL,$item_schema));
+	
+	// check for old schema
+	$tables = array();
+	$tbl = 'Tables_in_'.DB_NAME;
+	foreach($wpdb->get_results('SHOW TABLES') as $row)
+		$tables[] = $row->$tbl;
+	
+	// migrate data if upgrading from 1.0+
+	if(in_array($wpdb->prefix.'fs_galleries',$tables)) {
+		$results = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}fs_galleries");
+		foreach($results as $row) {
+			$items = unserialize($row->items);
+			$wpdb->insert(FS_GALTBL,array(
+				'id'=>$row->id,
+				'gallery_name'=>$row->gallery_name,
+				'dstamp'=>$row->dstamp,
+				'width'=>$row->width,
+				'height'=>$row->height,
+				'pauseTime'=>$row->timeout,
+				'animSpeed'=>$row->transition_speed
+				),array('%d','%s','%s','%d','%d','%d','%d'));
+		}
+	}
+	
+	
 }
 register_activation_hook(__FILE__, 'fs_activation');
 
