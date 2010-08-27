@@ -312,6 +312,7 @@ $items = $gallery ? $wpdb->get_results($wpdb->prepare('SELECT * FROM '.FS_ITEMTB
 </div><!-- new-gallery-image-form -->
 <div class="clear"></div><br class="clear" /><p>&nbsp;</p>
 <hr />
+
 <?php if($items) :?>
 <div class="tablenav">
 	<div class="alignleft">
