@@ -31,6 +31,7 @@ function fs_render_slider( $galleryID )
 		$items[]=$row->id;
 		
 	$sql = "SELECT
+			  i.id,
 			  m.meta_value,
 			  i.caption_text,
 			  i.href
@@ -47,15 +48,54 @@ function fs_render_slider( $galleryID )
 	
 	<!-- fotoslide #<?php echo $gallery->id; ?> -->
 	<div id="fotoslide-<?php echo $gallery->id; ?>" class="<?php echo $gallery->class_attribute; ?>">
-	<?php foreach($images as $image) : ?>
-	  <img src="<?php echo getUploadPath().$image->meta_value; ?>" alt="Image" />
-	<?php endforeach; ?>
-	</div>
+	<?php 
+	$captions = array();
+	
+	foreach($images as $image) {
+		$ret = '';
+		$title = '';
+		if(!empty($image->caption_text)) {
+			$title = 'title="#fs-caption-id-'.$image->id.'" ';
+			$captions[] = array(
+				'id'=>'fs-caption-id-'.$image->id,
+				'content'=>$image->caption_text
+			);
+		}
+		
+		if(!empty($image->href))
+			$ret .= '<a href="'.stripslashes($image->href).'">';
+			
+		$ret .= '<img '.$title.'src="'.WP_PLUGIN_URL.'/fotoslide/timthumb.php?src=';
+		$ret .= getUploadPath().'/'.$image->meta_value;
+		$ret .= '&w='.$gallery->width.'&h='.$gallery->height.'" alt="Image" />';
+		
+		if(!empty($image->href))
+			$ret .= '</a>';
+		
+		echo $ret;
+	}
+	
+	?>
+	</div><!-- fotoslide #<?php echo $gallery->id; ?> -->
+	<?php 
+	// render captions
+	foreach($captions as $caption) {
+		
+		$ret = '<div id="'.$caption['id'].'" class="nivo-html-caption span-24 last">';
+		$ret .= $caption['content'];
+		$ret .= '</div>';
+		
+		echo $ret;
+	}
+	?>
 	
 	<script type="text/javascript">
 	//<[CDATA[
 	jQuery(document).ready(function($) {
-		$('#fotoslide-<?php echo $gallery->id; ?>').nivoSlider({
+		$('#fotoslide-<?php echo $gallery->id; ?>').css({
+			width: '<?php echo $gallery->width; ?>px',
+			height: '<?php echo $gallery->height; ?>px'
+		}).nivoSlider({
 				controlNav:false,
 				controlNavThumbs:false,
 				directionNav:false,
