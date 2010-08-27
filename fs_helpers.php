@@ -47,7 +47,7 @@ function fs_render_slider( $galleryID )
 	?>
 	
 	<!-- fotoslide #<?php echo $gallery->id; ?> -->
-	<div id="fotoslide-<?php echo $gallery->id; ?>" class="<?php echo $gallery->class_attribute; ?>">
+	<div id="fotoslide-<?php echo $gallery->id; ?>">
 	<?php 
 	$captions = array();
 	
@@ -68,7 +68,6 @@ function fs_render_slider( $galleryID )
 		$ret .= '<img '.$title.'src="'.WP_PLUGIN_URL.'/fotoslide/timthumb.php?src=';
 		$ret .= getUploadPath().'/'.$image->meta_value;
 		$ret .= '&w='.$gallery->width.'&h='.$gallery->height.'" alt="Image" />';
-		
 		if(!empty($image->href))
 			$ret .= '</a>';
 		
@@ -80,11 +79,9 @@ function fs_render_slider( $galleryID )
 	<?php 
 	// render captions
 	foreach($captions as $caption) {
-		
-		$ret = '<div id="'.$caption['id'].'" class="nivo-html-caption span-24 last">';
+		$ret = '<div id="'.$caption['id'].'" class="'.$gallery->class_attribute.'">';
 		$ret .= $caption['content'];
 		$ret .= '</div>';
-		
 		echo $ret;
 	}
 	?>
@@ -102,7 +99,9 @@ function fs_render_slider( $galleryID )
 				effect:"<?php echo $gallery->effect; ?>",
 				captionOpacity:<?php echo $gallery->captionOpacity; ?>,
 				animSpeed:<?php echo $gallery->animSpeed; ?>,
-				pauseTime:<?php echo $gallery->pauseTime; ?>
+				pauseTime:<?php echo $gallery->pauseTime; ?>,
+				slices:<?php echo $gallery->slices; ?>,
+				directionNav:<?php echo $gallery->directionNav == 1 ? 'true' : 'false'; ?>
 		});
 	});
 	//]]>

@@ -152,6 +152,17 @@ if($galleryCount > 0) {
     		<option value="fade"><?php _e('Fade'); ?></option>
     	</select></td>
   </tr>
+  
+  <tr valign="top">
+    <th scope="row"><label for="gallery_slices"><?php _e('Slices'); ?></label></th>
+    <td><input type="text" name="gallery_slices" id="gallery_slices" class="regular-text" value="15" /></td>
+  </tr>
+  
+  <tr valign="top">
+    <th scope="row"><label for="gallery_direction_nav"><?php _e('Add Direction Nav '); ?></label></th>
+    <td><input type="checkbox" name="gallery_direction_nav" id="gallery_direction_nav"  /></td>
+  </tr>
+  
   <tr valign="top">
     <th scope="row"><label for="gallery_caption_opacity"><?php _e('Caption Opacity'); ?></label></th>
     <td><select name="gallery_caption_opacity" id="gallery_caption_opacity">
@@ -161,7 +172,7 @@ if($galleryCount > 0) {
     </select></td>
   </tr>
   <tr valign="top">
-    <th scope="row"><label for="gallery_class_attribute"><?php _e('Class Attribute'); ?></label></th>
+    <th scope="row"><label for="gallery_class_attribute"><?php _e('Caption Class Attribute'); ?></label></th>
     <td><input type="text" name="gallery_class_attribute" id="gallery_class_attribute" class="regular-text" value="fotoslide" /></td>
   </tr>
   
@@ -225,6 +236,17 @@ $gallery = $wpdb->get_row($wpdb->prepare("SELECT * FROM ".FS_GALTBL." WHERE id =
     		<option value="fade"<?php if($gallery->effect == 'fade') : ?> selected="selected"<?php endif; ?>><?php _e('Fade'); ?></option>
     	</select></td>
   </tr>
+  
+  <tr valign="top">
+    <th scope="row"><label for="gallery_slices"><?php _e('Slices'); ?></label></th>
+    <td><input type="text" name="gallery_slices" id="gallery_slices" class="regular-text" value="<?php echo $gallery->slices; ?>" /></td>
+  </tr>
+  
+  <tr valign="top">
+    <th scope="row"><label for="gallery_direction_nav"><?php _e('Add Direction Nav '); ?></label></th>
+    <td><input type="checkbox" name="gallery_direction_nav" id="gallery_direction_nav"<?php if($gallery->directionNav==1) : ?> checked="checked"<?php endif; ?>  /></td>
+  </tr>
+  
   <tr valign="top">
     <th scope="row"><label for="gallery_caption_opacity"><?php _e('Caption Opacity'); ?></label></th>
     <td><select name="gallery_caption_opacity" id="gallery_caption_opacity">
@@ -234,7 +256,7 @@ $gallery = $wpdb->get_row($wpdb->prepare("SELECT * FROM ".FS_GALTBL." WHERE id =
     </select></td>
   </tr>
   <tr valign="top">
-    <th scope="row"><label for="gallery_class_attribute"><?php _e('Class Attribute'); ?></label></th>
+    <th scope="row"><label for="gallery_class_attribute"><?php _e('Caption Class Attribute'); ?></label></th>
     <td><input type="text" name="gallery_class_attribute" id="gallery_class_attribute" class="regular-text" value="<?php echo $gallery->class_attribute; ?>" /></td>
   </tr>
   
