@@ -12,15 +12,16 @@ function is_wpmu()
 
 
 /**
- * Render the slider
+ * Render the slider.
  * 
  * @since	2.0
  * @param 	string $galleryID
- * @return	null
+ * @return	mixed
  */
 function fs_render_slider( $galleryID )
 {
 	global $wpdb;
+	$ret = '';
 	$gallery = $wpdb->get_row($wpdb->prepare('SELECT * FROM '.FS_GALTBL.' WHERE id = %d',array($galleryID)));
 	$res = $wpdb->get_results($wpdb->prepare('SELECT id FROM '.FS_ITEMTBL.' WHERE gallery_id = %d',array($galleryID)));
 	if(!$res)
@@ -44,15 +45,13 @@ function fs_render_slider( $galleryID )
 	$images = $wpdb->get_results($sql);
 	if(!$images)
 		return false;
-	?>
 	
-	<!-- fotoslide #<?php echo $gallery->id; ?> -->
-	<div id="fotoslide-<?php echo $gallery->id; ?>">
-	<?php 
+	// render the gallery html
+	$ret .= "<div id='fotoslide-$gallery->id'>\n";
 	$captions = array();
 	
+	// loop throu images
 	foreach($images as $image) {
-		$ret = '';
 		$title = '';
 		if(!empty($image->caption_text)) {
 			$title = 'title="#fs-caption-id-'.$image->id.'" ';
@@ -67,46 +66,45 @@ function fs_render_slider( $galleryID )
 			
 		$ret .= '<img '.$title.'src="'.WP_PLUGIN_URL.'/fotoslide/timthumb.php?src=';
 		$ret .= getUploadPath().'/'.$image->meta_value;
-		$ret .= '&w='.$gallery->width.'&h='.$gallery->height.'" alt="Image" />';
+		$ret .= '&amp;w='.$gallery->width.'&amp;h='.$gallery->height.'" alt="Image" />';
 		if(!empty($image->href))
 			$ret .= '</a>';
 		
-		echo $ret;
 	}
 	
-	?>
-	</div><!-- fotoslide #<?php echo $gallery->id; ?> -->
-	<?php 
+	$ret .= "</div>\n";
+	
 	// render captions
 	foreach($captions as $caption) {
 		$ret = '<div id="'.$caption['id'].'" class="'.$gallery->class_attribute.'">';
 		$ret .= $caption['content'];
 		$ret .= '</div>';
-		echo $ret;
 	}
-	?>
 	
-	<script type="text/javascript">
-	//<[CDATA[
-	jQuery(document).ready(function($) {
-		$('#fotoslide-<?php echo $gallery->id; ?>').css({
-			width: '<?php echo $gallery->width; ?>px',
-			height: '<?php echo $gallery->height; ?>px'
-		}).nivoSlider({
-				controlNav:false,
-				controlNavThumbs:false,
-				directionNav:false,
-				effect:"<?php echo $gallery->effect; ?>",
-				captionOpacity:<?php echo $gallery->captionOpacity; ?>,
-				animSpeed:<?php echo $gallery->animSpeed; ?>,
-				pauseTime:<?php echo $gallery->pauseTime; ?>,
-				slices:<?php echo $gallery->slices; ?>,
-				directionNav:<?php echo $gallery->directionNav == 1 ? 'true' : 'false'; ?>
-		});
-	});
-	//]]>
-	</script>
-	<?php
+	// render the javascript
+	$directionNav = $gallery->directionNav == 1 ? 'true' : 'false';
+	$ret .= "<script type=\"text/javascript\">
+			//<[CDATA[
+			jQuery(document).ready(function($) {
+				$('#fotoslide-$gallery->id').css({
+					width: '{$gallery->width}px',
+					height: '{$gallery->height}px'
+				}).nivoSlider({
+						controlNav:false,
+						controlNavThumbs:false,
+						directionNav:false,
+						effect:\"$gallery->effect\",
+						captionOpacity:$gallery->captionOpacity,
+						animSpeed:$gallery->animSpeed,
+						pauseTime: $gallery->pauseTime,
+						slices:$gallery->slices,
+						directionNav:$directionNav
+				});
+			});
+			//]]>
+			</script>";
+	
+	return $ret;
 }
 
 
