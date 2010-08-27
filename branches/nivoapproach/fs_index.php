@@ -26,21 +26,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 global $wpdb;
+ini_set('display_errors','on');
 
 // define url to plugin directory
 defined('WP_PLUGIN_URL') || define(WP_PLUGIN_URL, WP_CONTENT_URL . '/plugins', true);
-
-// define admin url
 define('WP_PLUGIN_BASE_URL', get_bloginfo('url') . '/wp-admin/upload.php?page=fotoslide', true);
-
-// define db table name
-define('FS_TABLENAME', $wpdb->prefix.'fotoslide_galleries', true);
-
-// define old db table name
-define('FS_OLD_TABLENAME', $wpdb->prefix.'fs_galleries', true);
-
 define('FS_GALTBL',$wpdb->prefix.'fotoslide_galleries',true);
-define('FS_ITEMTBL',$wpdb->prefix.'fotoslide_galleries',true);
+define('FS_ITEMTBL',$wpdb->prefix.'fotoslide_items',true);
 
 // load the helpers
 require_once(dirname(__FILE__).'/fs_helpers.php');
@@ -68,8 +60,9 @@ function fs_activation()
 	global $wpdb;
 	
 	list($gallery_schema, $item_schema) = explode('@next',file_get_contents(dirname(__FILE__).'/assets/schema.sql'));
+	
 	$wpdb->query(str_replace('{tablename_galleries}',FS_GALTBL,$gallery_schema));
-	$wpdb->query(str_replace('{tablename_galleries}',FS_ITEMTBL,$item_schema));
+	$wpdb->query(str_replace('{tablename_items}',FS_ITEMTBL,$item_schema));
 	
 	// check for old schema
 	$tables = array();
@@ -79,9 +72,9 @@ function fs_activation()
 	
 	// migrate data if upgrading from 1.0+
 	if(in_array($wpdb->prefix.'fs_galleries',$tables)) {
-		$results = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}fs_galleries");
-		foreach($results as $row) {
-			$items = unserialize($row->items);
+		$sql = 'INSERT INTO '.FS_ITEMTBL. ' (post_id,caption_text,href,gallery_id,order_num) VALUES ';
+		foreach($wpdb->get_results("SELECT * FROM {$wpdb->prefix}fs_galleries") as $row) {
+			// mirror old galleries into new table
 			$wpdb->insert(FS_GALTBL,array(
 				'id'=>$row->id,
 				'gallery_name'=>$row->gallery_name,
@@ -90,7 +83,31 @@ function fs_activation()
 				'height'=>$row->height,
 				'pauseTime'=>$row->timeout,
 				'animSpeed'=>$row->transition_speed
-				),array('%d','%s','%s','%d','%d','%d','%d'));
+				),array('%d','%s','%s','%d','%d','%d','%d')
+			);
+			
+			// insert gallery items
+			if(count(unserialize($row->items)) > 0) {
+				$items = $wpdb->get_results("SELECT * FROM $wpdb->postmeta WHERE post_id IN(".implode(',',unserialize($row->items)).")
+							 AND meta_name IN('_fs_image_meta','_fs_image_order') ");
+				if($items) {
+					$postmeta = array();
+					foreach($items as $item)
+						$postmeta[$item->post_id][$item->meta_name] = $item->meta_value;
+						
+					foreach($postmeta as $post_id => $meta) {
+						$caption_text = isset($meta['_fs_image_meta']['caption_text']) ? $meta['_fs_image_meta']['caption_text'] : '';
+						$href = isset($meta['_fs_image_meta']['image_link']) ? $meta['_fs_image_meta']['image_link'] : '';
+						$gallery_id = $row->id;
+						$order_num = isset($meta['_fs_image_order']) ? int($meta['_fs_image_order']) : 0;
+						$sql .= "($post_id,'".addslashes($caption_text)."','".addslashes($href)."',$gallery_id,$order_num),";
+					}
+				}
+			}
+		}
+		
+		if(substr($sql,-7,6)!='VALUES') {
+			$wpdb->query($sql);
 		}
 	}
 	

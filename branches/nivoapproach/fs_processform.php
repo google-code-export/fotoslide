@@ -29,31 +29,15 @@ if($action == 'delete-gallery' && isset($_GET['confirm']) && isset($_GET['gid'])
 			'showform'=>true
 		);
 	} else {
-		$gallery = $wpdb->get_row($wpdb->prepare("SELECT * FROM ".FS_TABLENAME." WHERE id = %d",array($_GET['gid'])));
-		if($gallery) {
-			// delete unused postmeta
-			$sql = "DELETE FROM $wpdb->postmeta WHERE meta_key LIKE '_fs_%' AND post_id IN(".implode(',',unserialize($gallery->items)).")";
-			$wpdb->query($sql);
-			
-			$sql = "DELETE FROM ".FS_TABLENAME." WHERE id=".$gallery->id;
-			$wpdb->query($sql);
-			$message = array(
-				'output'=>true,
-				'type'=>'success',
-				'message'=>'Gallery deleted succesfully',
-				'action'=>'delete-gallery',
-				'showform'=>false
-			);
-		}else {
-			
-			$message = array(
-				'output'=>true,
-				'type'=>'err',
-				'message'=>'Invalid gallery selected',
-				'action'=>'delete-gallery',
-				'showform'=>true
-			);
-		}		
+		$wpdb->query($wpdb->prepare('DELETE FROM '.FS_GALTBL.' WHERE id = %d',array($_GET['gid'])));
+		$wpdb->query($wpdb->prepare('DELETE FROM '.FS_ITEMTBL.' WHERE gallery_id = %d',array($_GET['gid'])));
+		$message = array(
+			'output'=>true,
+			'type'=>'success',
+			'message'=>'Gallery deleted succesfully',
+			'action'=>'delete-gallery',
+			'showform'=>false
+		);
 	}		
 }
 
@@ -80,20 +64,20 @@ elseif($action == 'new-gallery' && isset($_REQUEST['_wpnonce']) && isset($_GET['
 				'showform'=>true
 			);
 		} else {
-			$query = $wpdb->insert(FS_TABLENAME,
+			$query = $wpdb->insert(FS_GALTBL,
 							array(
 								'gallery_name'=>$_POST['gallery_name'],
 								'dstamp'=>date('Y-m-d H:i:s'),
 								'width'=>empty($_POST['gallery_width']) ? 400 : (int)$_POST['gallery_width'],
 								'height'=>empty($_POST['gallery_height']) ? 200 : (int)$_POST['gallery_height'],
-								'timeout'=>empty($_POST['gallery_timeout']) ? 4000 : (int)$_POST['gallery_timeout'],
-								'items'=>serialize(array()),
-								'transition_speed'=>empty($_POST['gallery_transition_speed']) ? 1000 : (int)$_POST['gallery_transition_speed'],
+								'pauseTime'=>empty($_POST['gallery_pause_time']) ? 4000 : (int)$_POST['gallery_pause_time'],
+								'animSpeed'=>empty($_POST['gallery_transition_speed']) ? 1000 : (int)$_POST['gallery_transition_speed'],
 								'effect'=>$_POST['gallery_transition_effect'],
-								'caption_opacity'=>$_POST['gallery_caption_opacity'],
-								'class_attribute'=>$_POST['gallery_class_attribute']
+								'captionOpacity'=>(int)$_POST['gallery_caption_opacity'] / 100,
+								'class_attribute'=>$_POST['gallery_class_attribute'],
+								
 							),
-							array('%s','%s','%d','%d','%d','%s','%d','%s','%d','%s')
+							array('%s','%s','%d','%d','%d','%d','%s','%s','%s')
 						);
 			
 			if(!$query) {
@@ -142,19 +126,19 @@ elseif($action=='edit-gallery' && isset($_GET['update']) && isset($_GET['gid']) 
 			);
 		} else {
 			
-			$wpdb->update(FS_TABLENAME,
+			$wpdb->update(FS_GALTBL,
 					array(
 						'gallery_name'=>$_POST['gallery_name'],
 						'width'=>empty($_POST['gallery_width']) ? 400 : (int)$_POST['gallery_width'],
 						'height'=>empty($_POST['gallery_height']) ? 200 : (int)$_POST['gallery_height'],
-						'timeout'=>empty($_POST['gallery_timeout']) ? 4000 : (int)$_POST['gallery_timeout'],
-						'transition_speed'=>empty($_POST['gallery_transition_speed']) ? 1000 : (int)$_POST['gallery_transition_speed'],
+						'pauseTime'=>empty($_POST['gallery_pause_time']) ? 4000 : (int)$_POST['gallery_pause_time'],
+						'animSpeed'=>empty($_POST['gallery_transition_speed']) ? 1000 : (int)$_POST['gallery_transition_speed'],
 						'effect'=>$_POST['gallery_transition_effect'],
-						'caption_opacity'=>$_POST['gallery_caption_opacity'],
-						'class_attribute'=>$_POST['gallery_class_attribute']
+						'captionOpacity'=>(int)$_POST['gallery_caption_opacity'] / 100,
+						'class_attribute'=>$_POST['gallery_class_attribute'],
 					),
 					array('id'=>$_GET['gid']),
-					array('%s','%d','%d','%d','%d','%s','%d','%s'),
+					array('%s','%d','%d','%d','%d','%s','%s','%s'),
 					array('%d')
 				);
 			
