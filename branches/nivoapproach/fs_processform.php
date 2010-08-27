@@ -75,9 +75,11 @@ elseif($action == 'new-gallery' && isset($_REQUEST['_wpnonce']) && isset($_GET['
 								'effect'=>$_POST['gallery_transition_effect'],
 								'captionOpacity'=>(int)$_POST['gallery_caption_opacity'] / 100,
 								'class_attribute'=>$_POST['gallery_class_attribute'],
+								'slices'=>$_POST['gallery_slices'],
+								'directionNav'=>isset($_POST['gallery_direction_nav']) ? 1 : 0
 								
 							),
-							array('%s','%s','%d','%d','%d','%d','%s','%s','%s')
+							array('%s','%s','%d','%d','%d','%d','%s','%s','%s','%d','%d')
 						);
 			
 			if(!$query) {
@@ -136,9 +138,11 @@ elseif($action=='edit-gallery' && isset($_GET['update']) && isset($_GET['gid']) 
 						'effect'=>$_POST['gallery_transition_effect'],
 						'captionOpacity'=>(int)$_POST['gallery_caption_opacity'] / 100,
 						'class_attribute'=>$_POST['gallery_class_attribute'],
+						'slices'=>$_POST['gallery_slices'],
+						'directionNav'=>isset($_POST['gallery_direction_nav']) ? 1 : 0
 					),
 					array('id'=>$_GET['gid']),
-					array('%s','%d','%d','%d','%d','%s','%s','%s'),
+					array('%s','%d','%d','%d','%d','%s','%s','%s','%d','%d'),
 					array('%d')
 				);
 			
