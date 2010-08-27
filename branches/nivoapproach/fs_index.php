@@ -88,27 +88,27 @@ function fs_activation()
 			
 			// insert gallery items
 			if(count(unserialize($row->items)) > 0) {
-				$items = $wpdb->get_results("SELECT * FROM $wpdb->postmeta WHERE post_id IN(".implode(',',unserialize($row->items)).")
-							 AND meta_name IN('_fs_image_meta','_fs_image_order') ");
+				$postmeta_sql = "SELECT * FROM $wpdb->postmeta WHERE post_id IN(".implode(',',unserialize($row->items)).") AND meta_key IN('_fs_image_meta','_fs_image_order') ";
+				$items = $wpdb->get_results($postmeta_sql);
 				if($items) {
 					$postmeta = array();
 					foreach($items as $item)
-						$postmeta[$item->post_id][$item->meta_name] = $item->meta_value;
-						
+						$postmeta[$item->post_id][$item->meta_key] = ($item->meta_key == '_fs_image_meta') ? unserialize($item->meta_value) : $item->meta_value;
+					
 					foreach($postmeta as $post_id => $meta) {
+						$pid = (int)$post_id;
 						$caption_text = isset($meta['_fs_image_meta']['caption_text']) ? $meta['_fs_image_meta']['caption_text'] : '';
 						$href = isset($meta['_fs_image_meta']['image_link']) ? $meta['_fs_image_meta']['image_link'] : '';
 						$gallery_id = $row->id;
-						$order_num = isset($meta['_fs_image_order']) ? int($meta['_fs_image_order']) : 0;
-						$sql .= "($post_id,'".addslashes($caption_text)."','".addslashes($href)."',$gallery_id,$order_num),";
+						$order_num = isset($meta['_fs_image_order']) ? (int)$meta['_fs_image_order'] : 0;
+						$sql .= "($pid,'".addslashes($caption_text)."','".addslashes($href)."',$gallery_id,$order_num),";
 					}
 				}
 			}
 		}
 		
-		if(substr($sql,-7,6)!='VALUES') {
-			$wpdb->query($sql);
-		}
+		if(substr($sql,-1)===',')
+			$wpdb->query(substr($sql,0,-1));
 	}
 	
 	
