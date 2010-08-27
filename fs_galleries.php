@@ -45,7 +45,7 @@ if($galleryCount > 0) {
     <tr>
       <th scope="col" width="25px" class="manage-column"><?php _e('#'); ?></th>
       <th scope="col" class="manage-column"><?php _e('Gallery Name'); ?></th>
-      <th scope="col" class="manag-column"><?php _e('Image count'); ?></th>
+      <th scope="col" class="manag-column"><?php _e('Effect'); ?></th>
       <th scope="col" class="manage-column"><?php _e('Size (w x h)'); ?></th>
       <th scope="col" class="manage-column"><?php _e('Pause'); ?></th>
       <th scope="col" class="manage-column"><?php _e('Speed'); ?></th>
@@ -56,7 +56,7 @@ if($galleryCount > 0) {
     <tr>
       <th scope="col" width="25px" class="manage-column"><?php _e('#'); ?></th>
       <th scope="col" class="manage-column"><?php _e('Gallery Name'); ?></th>
-      <th scope="col" class="manag-column"><?php _e('Image count'); ?></th>
+      <th scope="col" class="manag-column"><?php _e('Effect'); ?></th>
       <th scope="col" class="manage-column"><?php _e('Size (w x h)'); ?></th>
       <th scope="col" class="manage-column"><?php _e('Pause'); ?></th>
       <th scope="col" class="manage-column"><?php _e('Speed'); ?></th>
@@ -71,7 +71,7 @@ if($galleryCount > 0) {
     <tr id="fs-gallery-<?php echo $gallery->id; ?>" valign="top"<?php if($alt) : ?> class="alternate"<?php endif; $alt = $alt ? false : true; ?>>
       <td><?php echo $gallery->id; ?></td>
       <td><?php echo stripslashes($gallery->gallery_name); ?></td>
-      <td><?php echo count(unserialize($gallery->items)); ?></td>
+      <td><?php echo $gallery->effect; ?></td>
       <td><?php echo $gallery->width . ' x ' . $gallery->height; ?></td>
       <td><?php echo $gallery->pauseTime; ?></td>
       <td><?php echo $gallery->animSpeed; ?></td>
@@ -268,40 +268,8 @@ if($message['action'] == 'delete-gallery' && $message['showform'] == true) : ?>
 /**
  * SHOW GALLERY ITEMS
  */
-$gallery = $wpdb->get_row($wpdb->prepare("SELECT * FROM ".FS_TABLENAME." WHERE id = %d", array($_GET['gid'])));
-$items = array();
-
-if($gallery) {
-	$items = unserialize($gallery->items);
-}
-
-if(count($items) > 0) {
-	$images = array();
-	$in = implode(',',$items);
-	$sql = "SELECT
-			  p.post_id,
-			  p.meta_value,
-			  (SELECT meta_value FROM $wpdb->postmeta WHERE post_id = p.post_id AND meta_key = '_fs_image_meta') AS val
-			FROM $wpdb->postmeta p
-			WHERE p.post_id IN($in) AND p.meta_key = '_fs_image_order'
-			ORDER BY p.meta_value ASC";
-	$meta = $wpdb->get_results($sql);
-	foreach($meta as $meta_item) {
-		
-		$data = unserialize($meta_item->val);
-		$images[] = array(
-			'post_id'=>$meta_item->post_id,
-			'image_link'=>$data['image_link'],
-			'caption_text'=>$data['caption_text'],
-			'caption_location'=>$data['caption_location'],
-			'caption_opacity'=>$data['caption_opacity'],
-			'caption_bg_colour'=>$data['caption_bg_colour'],
-			'caption_text_colour'=>$data['caption_text_colour'],
-			'order'=>$data['order'],
-			'file'=>$data['file']
-		);
-	}
-}
+$gallery = $wpdb->get_row($wpdb->prepare("SELECT * FROM ".FS_GALTBL." WHERE id = %d", array($_GET['gid'])));
+$items = $gallery ? $wpdb->get_results($wpdb->prepare('SELECT * FROM '.FS_ITEMTBL.' WHERE gallery_id = %d ORDER BY order_num ASC',array($_GET['gid']))) : false;
 
 ?>
 <p>&nbsp;</p>
@@ -324,7 +292,7 @@ if(count($items) > 0) {
   </tr>
   <tr valign="top">
     <th scope="row"><label for="caption_text"><?php _e('Caption Message'); ?></label></th>
-    <td><input type="text" name="caption_text" id="caption_text" class="regular-text" value="" /></td>
+    <td><textarea cols="50" rows="10" name="caption_text" id="caption_text" class="large-text code"></textarea></td>
   </tr>
   <tr valign="top">
     <th scope="row"><label for="image_order"><?php _e('Order'); ?></label></th>
@@ -344,7 +312,7 @@ if(count($items) > 0) {
 </div><!-- new-gallery-image-form -->
 <div class="clear"></div><br class="clear" /><p>&nbsp;</p>
 <hr />
-<?php if(isset($images)) :?>
+<?php if($items) :?>
 <div class="tablenav">
 	<div class="alignleft">
     	<h3><?php _e('Gallery Images for &#8220;' . $gallery->gallery_name . '&#8221; gallery'); ?></h3>
@@ -375,14 +343,14 @@ if(count($items) > 0) {
     </div>
 </div>
 <?php endif; ?>
-<?php if(isset($images)) : $i=0; $class = 'alt'; foreach($images as $image) : ?>
+<?php if($items) : $i=0; $class = 'alt'; foreach($items as $image) : ?>
 <div class="fs-gal-item <?php echo $class; ?>">
 
-  <input type="hidden" name="Images[<?php echo $i; ?>][post_id]" value="<?php echo $image['post_id']; ?>" />
+  <input type="hidden" name="Images[<?php echo $i; ?>][post_id]" value="<?php echo $image->post_id; ?>" />
   
   <!-- gallery thumbnail -->
   <div class="fs-gal-item-thumbnail">
-  <?php echo wp_get_attachment_image($image['post_id'],array(100,100));?>
+  <?php echo wp_get_attachment_image($image->post_id,array(100,100));?>
   </div>
   
   <!-- gallery input elements -->
@@ -391,24 +359,25 @@ if(count($items) > 0) {
       <tbody>
         <tr valign="top">
           <th scope="row"><label for=""><?php _e('Image Link')?></label></th>
-          <td><input type="text" name="Images[<?php echo $i; ?>][image_link]" value="<?php echo stripslashes($image['image_link']); ?>" class="regular-text" /></td>
+          <td><input type="text" name="Images[<?php echo $i; ?>][image_link]" value="<?php echo stripslashes($image->href); ?>" class="regular-text" /></td>
         </tr>
         <tr valign="top">
           <th scope="row"><label for=""><?php _e('Caption')?></label></th>
-          <td><textarea class="large-text" name="Images[<?php echo $i; ?>][caption_text]" cols="35" rows="10"><?php echo stripslashes($image['caption_text']); ?></textarea></td>
+          <td><textarea class="large-text" name="Images[<?php echo $i; ?>][caption_text]" cols="35" rows="10"><?php echo stripslashes($image->caption_text); ?></textarea></td>
         </tr>
         <tr valign="top">
           <th scope="row"><label for=""><?php _e('Order')?></label></th>
           <td><select name="Images[<?php echo $i; ?>][order]">
-		      		<?php for($ii=1; $ii<=count($images); $ii++) : ?>
-		            <option value="<?php echo $ii; ?>"<?php if((int)$image['order'] == $ii) : ?> selected="selected"<?php endif; ?>><?php echo $ii; ?></option>
+		      		<?php for($ii=1; $ii<=count($items); $ii++) : ?>
+		            <option value="<?php echo $ii; ?>"<?php if((int)$image->order_num == $ii) : ?> selected="selected"<?php endif; ?>><?php echo $ii; ?></option>
 		            <?php endfor; ?>
 		      </select>
+		      <input type="hidden" name="Images[<?php echo $i; ?>][id]" value="<?php echo $image->id; ?>" />
       	  </td>
         </tr>
         <tr valign="top">
           <th scope="row">&nbsp;</th>
-          <td><a href="<?php echo WP_PLUGIN_BASE_URL; ?>&amp;action=gallery-items&gid=<?php echo $_GET['gid']; ?>&amp;remove=<?php echo $image['post_id']; ?>&amp;_wpnonce=<?php echo wp_create_nonce('remove-item'); ?>" class="button-secondary"><?php _e('Remove'); ?></a></td>
+          <td><a href="<?php echo WP_PLUGIN_BASE_URL; ?>&amp;action=gallery-items&gid=<?php echo $_GET['gid']; ?>&amp;remove=<?php echo $image->post_id; ?>&amp;_wpnonce=<?php echo wp_create_nonce('remove-item'); ?>" class="button-secondary"><?php _e('Remove'); ?></a></td>
         </tr>
       </tbody>
     </table>
@@ -417,13 +386,13 @@ if(count($items) > 0) {
 </div>
 <?php $class = $class == 'alt' ? '' : 'alt'; $i++; endforeach; endif; ?>
 
-<?php if(isset($images)) : ?>
+<?php if($items) : ?>
 <div class="tablenav">
 	<div class="alignleft">
       <input type="submit" class="button-primary" value="Save changes to this gallery" />
     </div>
 	<div class="alignright">
-    	<a href="#" class="button-secondary add-image-to-gallery">Add a new image to this gallery</a>
+    	<a href="#" class="button-secondary add-image-to-gallery"><?php _e('Add a new image to this gallery'); ?></a>
     </div>
 </div>
 <?php endif; ?>

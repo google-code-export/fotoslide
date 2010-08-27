@@ -174,7 +174,7 @@ elseif($action == 'gallery-items' && isset($_GET['gid']) && isset($_GET['insert-
 				'showform'=>true
 			);
 		} else {
-			$gallery = $wpdb->get_row($wpdb->prepare("SELECT * FROM ".FS_TABLENAME." WHERE id = %d",array($_GET['gid'])));
+			$gallery = $wpdb->get_row($wpdb->prepare("SELECT * FROM ".FS_GALTBL." WHERE id = %d",array($_GET['gid'])));
 			if(!$gallery) {
 				$message = array(
 					'output'=>true,
@@ -183,34 +183,15 @@ elseif($action == 'gallery-items' && isset($_GET['gid']) && isset($_GET['insert-
 					'action'=>'gallery-items',
 					'showform'=>true
 				);
-			} elseif(in_array((int)$_POST['image_post_id'], unserialize($gallery->items))) {
-				$message = array(
-					'output'=>true,
-					'type'=>'err',
-					'message'=>'Image already exists in your gallery',
-					'action'=>'gallery-items',
-					'showform'=>true
-				);
 			} else {
 				// add image to gallery
-				$items = unserialize($gallery->items);
-				array_push($items, (int)$_POST['image_post_id']);
-				$wpdb->update(FS_TABLENAME,
-							  array('items'=>serialize($items)),
-							  array('id'=>$_GET['gid']),
-							  array('%s'),
-							  array('%d'));
-				
-				// add post meta with specifics
-				$imageMeta = array(
-					'image_link' => addslashes((string)$_POST['image_link']),
-					'caption_text' => addslashes((string)$_POST['caption_text']),
-					'order'=> (int)$_POST['image_order'],
-					'file'=>getUploadPath().get_post_meta((int)$_POST['image_post_id'], '_wp_attached_file', true)
-				);
-				add_post_meta((int)$_POST['image_post_id'], '_fs_image_meta', $imageMeta, true);
-				add_post_meta((int)$_POST['image_post_id'], '_fs_image_order', (int)$_POST['image_order'], true);
-				
+				$wpdb->insert(FS_ITEMTBL,array(
+					'post_id'=>$_POST['image_post_id'],
+					'caption_text'=>$_POST['caption_text'],
+					'href'=>$_POST['image_link'],
+					'gallery_id'=>$_GET['gid'],
+					'order_num'=>$_POST['image_order']
+				),array('%d','%s','%s','%d','%d'));
 				$message = array(
 					'output'=>true,
 					'type'=>'success',
@@ -236,14 +217,15 @@ elseif($action == 'gallery-items' && isset($_GET['gid']) && isset($_GET['update'
 		);
 	} else {
 		foreach($_POST['Images'] as $image) {
-			$imageMeta = array(
-					'image_link' => addslashes((string)$image['image_link']),
-					'caption_text' => addslashes((string)$image['caption_text']),
-					'order'=> (int)$image['order'],
-					'file'=>getUploadPath().get_post_meta((int)$image['post_id'], '_wp_attached_file', true)
-				);
-			update_post_meta((int)$image['post_id'],'_fs_image_meta',$imageMeta);
-			update_post_meta((int)$image['post_id'],'_fs_image_order',(int)$image['order']);
+			$wpdb->update(FS_ITEMTBL,array(
+				'caption_text'=>$image['caption_text'],
+				'href'=>$image['image_link'],
+				'order_num'=>$image['order']
+			),
+			array('id'=>$image['id']),
+			array('%s','%s','%d'),
+			array('%d')
+			);
 		}
 		
 		$message = array(
@@ -268,33 +250,15 @@ elseif($action == 'gallery-items' && isset($_GET['gid']) && isset($_GET['remove'
 			'showform'=>true
 		);
 	} else {
-		$gallery = $wpdb->get_row($wpdb->prepare("SELECT * FROM ".FS_TABLENAME." WHERE id = %d",array($_GET['gid'])));
-		if(!in_array((int)$_GET['remove'], unserialize($gallery->items))) {
-			$message = array(
-				'output'=>true,
-				'type'=>'err',
-				'message'=>'Image not in gallery',
-				'action'=>'gallery-items',
-				'showform'=>true
-			);
-		} else {
-			$new = array_diff(unserialize($gallery->items),array((int)$_GET['remove']));
-			$wpdb->update(FS_TABLENAME,
-						  array('items'=>serialize($new)),
-						  array('id'=>$gallery->id),
-						  array('%s'),
-						  array('%d'));
+		$wpdb->query($wpdb->prepare('DELETE FROM '.FS_ITEMTBL.' WHERE gallery_id = %d AND post_id = %d',
+			array($_GET['gid'],$_GET['remove'])));
 			
-			delete_post_meta((int)$_GET['remove'], '_fs_image_meta');
-			delete_post_meta((int)$_GET['remove'], '_fs_image_order');
-			
-			$message = array(
-				'output'=>true,
-				'type'=>'success',
-				'message'=>'Image removed from gallery',
-				'action'=>'gallery-items',
-				'showform'=>true
-			);
-		}
+		$message = array(
+			'output'=>true,
+			'type'=>'success',
+			'message'=>'Image removed from gallery',
+			'action'=>'gallery-items',
+			'showform'=>true
+		);
 	}
 }

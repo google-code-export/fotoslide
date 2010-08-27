@@ -50,7 +50,7 @@ if (!current_user_can('manage_options'))
 	do_action('admin_print_scripts');
 	do_action('admin_head');
 	if ( isset($content_func) && is_string($content_func) )
-		do_action( "admin_head_{$content_func}" );
+		//do_action( "admin_head_{$content_func}" );
 	?>
     <link rel="stylesheet" type="text/css" href="<?php bloginfo('url'); ?>/wp-content/plugins/fotoslide/assets/admin.css" media="screen" />
 </head>
