@@ -76,10 +76,13 @@ elseif($action == 'new-gallery' && isset($_REQUEST['_wpnonce']) && isset($_GET['
 								'captionOpacity'=>(int)$_POST['gallery_caption_opacity'] / 100,
 								'class_attribute'=>$_POST['gallery_class_attribute'],
 								'slices'=>$_POST['gallery_slices'],
-								'directionNav'=>isset($_POST['gallery_direction_nav']) ? 1 : 0
+								'directionNav'=>isset($_POST['gallery_direction_nav']) ? 1 : 0,
+								'directionNavHide'=>isset($_POST['gallery_direction_nav_on_hover']) ? 1 : 0,
+								'controlNav'=>isset($_POST['gallery_control_nav']) ? 1 : 0,
+								'randomize_first'=>isset($_POST['gallery_randomize_first']) ? 1 : 0
 								
 							),
-							array('%s','%s','%d','%d','%d','%d','%s','%s','%s','%d','%d')
+							array('%s','%s','%d','%d','%d','%d','%s','%s','%s','%d','%d','%d','%d','%d')
 						);
 			
 			if(!$query) {
@@ -139,10 +142,13 @@ elseif($action=='edit-gallery' && isset($_GET['update']) && isset($_GET['gid']) 
 						'captionOpacity'=>(int)$_POST['gallery_caption_opacity'] / 100,
 						'class_attribute'=>$_POST['gallery_class_attribute'],
 						'slices'=>$_POST['gallery_slices'],
-						'directionNav'=>isset($_POST['gallery_direction_nav']) ? 1 : 0
+						'directionNav'=>isset($_POST['gallery_direction_nav']) ? 1 : 0,
+						'directionNavHide'=>isset($_POST['gallery_direction_nav_on_hover']) ? 1 : 0,
+						'controlNav'=>isset($_POST['gallery_control_nav']) ? 1 : 0,
+						'randomize_first'=>isset($_POST['gallery_randomize_first']) ? 1 : 0
 					),
 					array('id'=>$_GET['gid']),
-					array('%s','%d','%d','%d','%d','%s','%s','%s','%d','%d'),
+					array('%s','%d','%d','%d','%d','%s','%s','%s','%d','%d','%d','%d','%d'),
 					array('%d')
 				);
 			

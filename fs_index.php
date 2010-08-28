@@ -34,10 +34,7 @@ define('WP_PLUGIN_BASE_URL', get_bloginfo('url') . '/wp-admin/upload.php?page=fo
 define('FS_GALTBL',$wpdb->prefix.'fotoslide_galleries',true);
 define('FS_ITEMTBL',$wpdb->prefix.'fotoslide_items',true);
 
-// load the helpers
 require_once(dirname(__FILE__).'/fs_helpers.php');
-
-// load admin menu
 require_once(dirname(__FILE__).'/fs_admin.php');
 
 // array holder for galleries
@@ -175,6 +172,7 @@ function fs_filter_content( $content )
 	if(preg_match_all($pattern, $content, $matches, PREG_SET_ORDER)) {
 		foreach($matches as $gallery) {
 			$slider = fs_render_slider(trim($gallery[1]));
+			
 			if($slider) {
 				$content = str_replace('[fs id="'.$gallery[1].'"]', $slider, $content);
 				$galleries[] = (int)$gallery[1];
@@ -198,17 +196,42 @@ add_filter('the_content','fs_filter_content');
 function fs_prepare_js( $galleries = array() )
 {
 	global $pageGalleries, $wpdb;
-	
 	if(count($pageGalleries) > 0) {
-		$galleries = $wpdb->get_results("SELECT * FROM ".FS_TABLENAME." WHERE id IN(".implode(',',$pageGalleries).")");
+		$galleries = $wpdb->get_results("SELECT * FROM ".FS_GALTBL." WHERE id IN(".implode(',',$pageGalleries).")");
 		?>
-		<!-- simpleslide -->
+		<!-- fotoslide -->
 		<script type="text/javascript">
 		//<![CDATA[
 		jQuery(document).ready(function($) {
 			<?php foreach($galleries as $gallery) : ?>
+
+			<?php if($gallery->randomize_first==1) : ?>
+			var total = $("#fotoslide-<?php echo $gallery->id; ?> img").length;
+			var rand = Math.floor(Math.random()*total);
+			<?php endif; ?>
 			
-			$("#fotoslide-<?php echo $gallery->id; ?>").intelislide({width:<?php echo $gallery->width; ?>,height:<?php echo $gallery->height; ?>,tagType:'span',transitionSpeed:<?php echo $gallery->transition_speed; ?>,timeout:<?php echo $gallery->timeout; ?>});
+			$("#fotoslide-<?php echo $gallery->id; ?>").css({
+				width:'<?php echo $gallery->width; ?>px',
+				height:'<?php echo $gallery->height; ?>px'
+			}).nivoSlider({
+				effect:'<?php echo $gallery->effect; ?>',
+				slices:<?php echo $gallery->slices; ?>,
+				animSpeed:<?php echo $gallery->animSpeed; ?>,
+				pauseTime:<?php echo $gallery->pauseTime; ?>,
+				directionNav:<?php echo $gallery->directionNav == 1 ? 'true' : 'false'?>,
+				directionNavHide:<?php echo $gallery->directionNavHide == 1 ? 'true' : 'false'?>,
+				controlNav:<?php echo $gallery->controlNav == 1 ? 'true' : 'false'; ?>,
+				controlNavThumbs:<?php echo $gallery->controlNavThumbs == 1 ? 'true' : 'false';?>,
+				controlNavThumbsFromRel:<?php echo $gallery->controlNavThumbsFromRel == 1 ? 'true' : 'false';?>,
+				controlNavThumbsSearch:'<?php echo $gallery->controlNavThumbsSearch;?>',
+				controlNavThumbsReplace:'<?php echo $gallery->controlNavThumbsReplace;?>',
+				keyboardNav:<?php echo $gallery->keyboardNav == 1 ? 'true':'false';?>,
+				pauseOnHover:<?php echo $gallery->pauseOnHover == 1 ? 'true':'false';?>,
+				manualAdvance:<?php echo $gallery->manualAdvance == 1 ? 'true':'false';?>,
+				startSlide:<?php echo $gallery->randomize_first == 1 ? 'rand':0;?>,
+				captionOpacity:<?php echo $gallery->captionOpacity;?>
+				
+			});
 			<?php endforeach; ?>
 			
 		});
@@ -235,4 +258,12 @@ function fs_media_buttons()
 	<?php
 }
 add_action('media_buttons','fs_media_buttons',11);
+
+
+function fs_delete_attachement( $id )
+{
+	global $wpdb;
+	$wpdb->query($wpdb->prepare('DELETE FROM '.FS_ITEMTBL.' WHERE post_id = %d',array($id)));
+}
+add_action('delete_attachment','fs_delete_attachment');
 ?>

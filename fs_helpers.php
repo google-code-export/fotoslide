@@ -54,7 +54,7 @@ function fs_render_slider( $galleryID )
 	foreach($images as $image) {
 		$title = '';
 		if(!empty($image->caption_text)) {
-			$title = 'title="#fs-caption-id-'.$image->id.'" ';
+			$title .= 'title="#fs-caption-id-'.$image->id.'" ';
 			$captions[] = array(
 				'id'=>'fs-caption-id-'.$image->id,
 				'content'=>$image->caption_text
@@ -67,6 +67,7 @@ function fs_render_slider( $galleryID )
 		$ret .= '<img '.$title.'src="'.WP_PLUGIN_URL.'/fotoslide/timthumb.php?src=';
 		$ret .= getUploadPath().'/'.$image->meta_value;
 		$ret .= '&amp;w='.$gallery->width.'&amp;h='.$gallery->height.'" alt="Image" />';
+		
 		if(!empty($image->href))
 			$ret .= '</a>';
 		
@@ -76,33 +77,11 @@ function fs_render_slider( $galleryID )
 	
 	// render captions
 	foreach($captions as $caption) {
-		$ret = '<div id="'.$caption['id'].'" class="'.$gallery->class_attribute.'">';
+		$ret .= '<div id="'.$caption['id'].'" class="'.$gallery->class_attribute.'">';
 		$ret .= $caption['content'];
 		$ret .= '</div>';
 	}
 	
-	// render the javascript
-	$directionNav = $gallery->directionNav == 1 ? 'true' : 'false';
-	$ret .= "<script type=\"text/javascript\">
-			//<[CDATA[
-			jQuery(document).ready(function($) {
-				$('#fotoslide-$gallery->id').css({
-					width: '{$gallery->width}px',
-					height: '{$gallery->height}px'
-				}).nivoSlider({
-						controlNav:false,
-						controlNavThumbs:false,
-						directionNav:false,
-						effect:\"$gallery->effect\",
-						captionOpacity:$gallery->captionOpacity,
-						animSpeed:$gallery->animSpeed,
-						pauseTime: $gallery->pauseTime,
-						slices:$gallery->slices,
-						directionNav:$directionNav
-				});
-			});
-			//]]>
-			</script>";
 	
 	return $ret;
 }
