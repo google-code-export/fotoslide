@@ -164,6 +164,21 @@ if($galleryCount > 0) {
   </tr>
   
   <tr valign="top">
+    <th scope="row"><label for="gallery_direction_nav_on_hover"><?php _e('Show direction on hover'); ?></label></th>
+    <td><input type="checkbox" name="gallery_direction_nav_on_hover" id="gallery_direction_nav_on_hover" /></td>
+  </tr>
+  
+  <tr valign="top">
+    <th scope="row"><label for="gallery_randomize_first"><?php _e('Randomize first slide'); ?></label></th>
+    <td><input type="checkbox" name="gallery_randomize_first" id="gallery_randomize_first" /></td>
+  </tr>
+  
+  <tr valign="top">
+    <th scope="row"><label for="gallery_control_nav"><?php _e('Control nav (1,2,3 etc.)'); ?></label></th>
+    <td><input type="checkbox" name="gallery_control_nav" id="gallery_control_nav" /></td>
+  </tr>
+  
+  <tr valign="top">
     <th scope="row"><label for="gallery_caption_opacity"><?php _e('Caption Opacity'); ?></label></th>
     <td><select name="gallery_caption_opacity" id="gallery_caption_opacity">
     	<?php for($i=10; $i<=100; $i = ($i+10)) : ?>
@@ -199,7 +214,8 @@ $gallery = $wpdb->get_row($wpdb->prepare("SELECT * FROM ".FS_GALTBL." WHERE id =
 <h3><?php _e('Edit Gallery'); ?></h3>
 <form method="post" action="<?php echo WP_PLUGIN_BASE_URL; ?>&amp;action=edit-gallery&amp;gid=<?php echo $gallery->id; ?>&amp;update=">
 <?php wp_nonce_field('edit-gallery'); ?>
-<table class="form-table">
+<table class="form-table" id="gallery-details">
+
   <tr valign="top">
     <th scope="row"><label for="gallery_name"><?php _e('Gallery Name'); ?></label></th>
     <td><input type="text" name="gallery_name" id="gallery_name" class="regular-text" value="<?php echo stripslashes($gallery->gallery_name); ?>" /></td>
@@ -246,6 +262,19 @@ $gallery = $wpdb->get_row($wpdb->prepare("SELECT * FROM ".FS_GALTBL." WHERE id =
     <th scope="row"><label for="gallery_direction_nav"><?php _e('Add Direction Nav '); ?></label></th>
     <td><input type="checkbox" name="gallery_direction_nav" id="gallery_direction_nav"<?php if($gallery->directionNav==1) : ?> checked="checked"<?php endif; ?>  /></td>
   </tr>
+  <tr valign="top">
+    <th scope="row"><label for="gallery_direction_nav_on_hover"><?php _e('Show direction on hover'); ?></label></th>
+    <td><input type="checkbox" name="gallery_direction_nav_on_hover" id="gallery_direction_nav_on_hover"<?php if($gallery->directionNavHide==1) : ?> checked="checked"<?php endif; ?>  /></td>
+  </tr>
+  <tr valign="top">
+    <th scope="row"><label for="gallery_control_nav"><?php _e('Control nav (1,2,3 etc.)'); ?></label></th>
+    <td><input type="checkbox" name="gallery_control_nav" id="gallery_control_nav"<?php if($gallery->controlNav==1) : ?> checked="checked"<?php endif; ?>  /></td>
+  </tr>
+  
+  <tr valign="top">
+    <th scope="row"><label for="gallery_randomize_first"><?php _e('Randomize first slide'); ?></label></th>
+    <td><input type="checkbox" name="gallery_randomize_first" id="gallery_randomize_first"<?php if($gallery->randomize_first==1) : ?> checked="checked"<?php endif; ?> /></td>
+  </tr>
   
   <tr valign="top">
     <th scope="row"><label for="gallery_caption_opacity"><?php _e('Caption Opacity'); ?></label></th>
@@ -265,6 +294,7 @@ $gallery = $wpdb->get_row($wpdb->prepare("SELECT * FROM ".FS_GALTBL." WHERE id =
     <td><input type="submit" class="button-primary" value="<?php _e('Save'); ?>" /></td>
   </tr>
 </table>
+
 </form>
 
 
