@@ -81,7 +81,10 @@ $totalItems = $wpdb->get_row($sql);
 $paginator = new FS_Paginator(array(
 	'totalItems'=>$totalItems->total,
 	'baseUrl'=>WP_PLUGIN_URL.'/fotoslide/fs_medialibrary.php',
-	'pageLimit'=>5
+	'pageLimit'=>5,
+	'pageParams'=>array(
+		'filter'=>$filter
+	)
 ));
 $offset = ($paginator->getCurrentPage() * 5) - 5;
 // get all image attachements
@@ -158,7 +161,7 @@ if($items) {
 
 <div class="tablenav">
 	<div class="alignleft">
-		<a href="#" rel='tb-close' class="button-secondary"><?php _e('Close'); ?></a>
+		<p><a href="#" rel='tb-close' class="button-primary"><?php _e('Close this window'); ?></a></p>
 	</div>
 </div>
 

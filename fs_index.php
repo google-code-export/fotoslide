@@ -3,7 +3,7 @@
 Plugin Name: FotoSlide
 Plugin URI: http://www.kevinbradwick.co.uk/2010/07/fotoslide-plugin-for-wordpress/ 
 Description: A plugin that renders multiple slideshows on your site
-Version: 1.1
+Version: 2.0
 Author: Kevin Bradwick
 Author URI: http://www.kevinbradwick.co.uk
 Licence: GPL2
@@ -180,11 +180,3 @@ function fs_media_buttons()
 	<?php
 }
 add_action('media_buttons','fs_media_buttons',11);
-
-
-function fs_media_meta()
-{
-	echo 'foo';
-}
-//add_filter('media_meta','fs_media_meta');
-?>

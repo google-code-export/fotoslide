@@ -59,18 +59,13 @@ if (!current_user_can('manage_options'))
 $total = $wpdb->get_row('SELECT COUNT(*) AS total FROM '.FS_TABLENAME)->total;
 if($total > 0) {
 	require_once(dirname(__FILE__).'/fs_helpers.php');
-	require_once(dirname(__FILE__).'/pagination.class.php');
+	require_once(dirname(__FILE__).'/fs_paginator.php');
 	
-	$p = new pagination;
-	$currentPage = isset($_GET['paging']) ? (int)$_GET['paging'] : 1;
-	$p->items($total);
-	$p->limit(10);
-	$p->target(WP_PLUGIN_URL.'/fotoslide/fs_galselect.php');
-	$p->currentPage($currentPage);
-	$p->parameterName('paging');
-	$p->adjacents(1);
-	$p->page = isset($_GET['paging']) ? (int)$_GET['paging'] : 1;
-	$limit = "LIMIT " . ($p->page - 1) * $p->limit . ', ' . $p->limit;
+	$paginator = new FS_Paginator(array(
+		'baseUrl'=>WP_PLUGIN_URL.'/fotoslide/fs_galselect.php',
+		'pageLimit'=>5,
+		'totalItems'=>$total
+	));
 }
 
 // get all galleries
@@ -86,7 +81,7 @@ $items = $wpdb->get_results($sql);
 	    	<h3><?php _e('FotoSlide Galleries'); ?></h3>
 	    	<p><?php _e('Copy and paste the code of the gallery into the editor to show it on your page');?></p>
 	    </div>
-		<div class="tablenav-pages"><?php echo isset($p) ? $p->show() : ''; ?></div>
+		<div class="tablenav-pages"><?php echo $paginator->render(); ?></div>
 	</div>
 	<form method="post" action="">
 	<table class="widefat">
