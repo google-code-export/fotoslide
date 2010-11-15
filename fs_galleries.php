@@ -242,7 +242,7 @@ if(count($items) > 0) {
 		);
 	}
 }
-
+$mediaURL = 'http://new.serenhub.co.uk/wp-admin/media-upload.php?type=image&TB_iframe=1&width=640&height=878';
 ?>
 <p>&nbsp;</p>
 <div id="new-gallery-item-form">
@@ -256,7 +256,7 @@ if(count($items) > 0) {
   </tr>
   <tr valign="top" id="image-select">
     <th scope="row">&nbsp;</th>
-    <td><a href="<?php echo WP_PLUGIN_URL; ?>/fotoslide/fs_medialibrary.php?&amp;gid=<?php echo $gallery->id; ?>&amp;TB_iframe=true&amp;height=620&amp;width=700&amp;modal=true" class="button-secondary thickbox" id="select-media"><?php _e('Select Image From Media Library'); ?></a></td>
+    <td><a href="<?php echo WP_PLUGIN_URL; ?>/fotoslide/fs_medialibrary.php?&amp;gid=<?php echo $gallery->id; ?>&amp;TB_iframe=true&amp;height=670&amp;width=700&amp;modal=true" class="button-secondary thickbox" id="select-media"><?php _e('Select Image From Media Library'); ?></a></td>
   </tr>
   <tr valign="top">
     <th scope="row"><label for="image_link"><?php _e('Image Link'); ?></label></th>
