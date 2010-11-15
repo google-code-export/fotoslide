@@ -61,7 +61,12 @@ if (!current_user_can('manage_options'))
 <?php
 
 // do pagination
-$sql = "SELECT COUNT(*) AS total FROM $wpdb->posts WHERE post_type='attachment' AND post_mime_type LIKE 'image%' ORDER BY post_date DESC";
+$filter = '';
+if(isset($_POST['filter']) || isset($_GET['filter'])) {
+	$filter = isset($_POST['filter']) ? esc_attr($_POST['filter']) : esc_attr($_GET['filter']);
+}
+
+$sql = "SELECT COUNT(*) AS total FROM $wpdb->posts WHERE post_title LIKE '%{$filter}%' AND post_type='attachment' AND post_mime_type LIKE 'image%' ORDER BY post_date DESC";
 if(isset($_GET['gid'])) {
 	$gallery = $wpdb->get_row($wpdb->prepare("SELECT * FROM ".FS_TABLENAME." WHERE id = %d",array($_GET['gid'])));
 	if($gallery && (count(unserialize($gallery->items)) > 0)) {
@@ -70,22 +75,17 @@ if(isset($_GET['gid'])) {
 }
 
 require_once(dirname(__FILE__).'/fs_helpers.php');
-require_once(dirname(__FILE__).'/pagination.class.php');
+require_once 'fs_paginator.php';
+
 $totalItems = $wpdb->get_row($sql);
-
-$p = new pagination;
-$currentPage = isset($_GET['paging']) ? $_GET['paging'] : 1;
-$p->items($totalItems->total);
-$p->limit(5);
-$p->target(WP_PLUGIN_URL.'/fotoslide/fs_medialibrary.php');
-$p->currentPage($currentPage);
-$p->parameterName('paging');
-$p->adjacents(1);
-$p->page = isset($_GET['paging']) ? (int)$_GET['paging'] : 1;
-$limit = "LIMIT " . ($p->page - 1) * $p->limit . ', ' . $p->limit;
-
+$paginator = new FS_Paginator(array(
+	'totalItems'=>$totalItems->total,
+	'baseUrl'=>WP_PLUGIN_URL.'/fotoslide/fs_medialibrary.php',
+	'pageLimit'=>5
+));
+$offset = ($paginator->getCurrentPage() * 5) - 5;
 // get all image attachements
-$items = $wpdb->get_results(str_replace('COUNT(*) AS total','*',$sql).' '.$limit);
+$items = $wpdb->get_results(str_replace('COUNT(*) AS total','*',$sql).' LIMIT '.$offset.',5');
 
 // get all meta info in one transaction
 if($items) {
@@ -104,12 +104,20 @@ if($items) {
 		}
 	}
 	?>
+	<div class="alignright">
+	<form method="post">
+	  <input type="text" name="filter" id="filter" />
+	  <input type="submit" value="Search" class="button-secondary" />
+	</form>
+	</div>
 	
 	<div class="tablenav">
 		<div class="alignleft">
 	    	<h3><?php _e('Image List'); ?></h3>
 	    </div>
-		<div class="tablenav-pages"><?php echo ($items) ? $p->show() : ''; ?></div>
+		<div class="tablenav-pages">
+		<?php $paginator->render(); ?>
+		</div>
 	</div>
 	<table class="widefat fixed" cellspacing="0">
 	  <thead>
