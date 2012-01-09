@@ -1,9 +1,9 @@
 === fotoslide ===
-Author: kbradwick
+Author: kbradwick, markoheijnen
 Tags: wps3slider, photos, image gallery, carousel, jquery, slideshow
 Requires at least: 2.7
-Tested up to: 3.0.1
-Stable tag: 1.1
+Tested up to: 3.3.1
+Stable tag: 2.0
 
 A plugin to render multiple slideshows on your site
 
