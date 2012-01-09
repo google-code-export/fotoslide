@@ -60,14 +60,14 @@ add_action('admin_menu','fs_menus');
  */
 function fs_admin_head()
 {
-	wp_register_style('jui-style', WP_PLUGIN_URL . '/fotoslide/assets/jquery-ui-1.7.3.custom.css');
-	wp_register_style('fs-admin', WP_PLUGIN_URL . '/fotoslide/assets/admin.css');
-	wp_print_styles('jui-style');
-	wp_print_styles('fs-admin');
-	wp_print_scripts('jquery');
-	wp_print_scripts('thickbox');
-	wp_print_scripts('jquery-ui-core');
-	wp_print_scripts('jquery-ui-tabs');
+	wp_register_style('jui-style', plugins_url( 'assets/jquery-ui-1.7.3.custom.css', __FILE__ ) );
+	wp_register_style('fs-admin',  plugins_url( 'assets/admin.css', __FILE__ ) );
+    wp_enqueue_style('jui-style');
+    wp_enqueue_style('fs-admin');
+	wp_enqueue_script('jquery');
+	wp_enqueue_script('thickbox');
+	wp_enqueue_script('jquery-ui-core');
+	wp_enqueue_script('jquery-ui-tabs');
 
 }
 add_action('admin_head','fs_admin_head');
