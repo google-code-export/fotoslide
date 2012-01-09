@@ -57,7 +57,7 @@ if (!current_user_can('manage_options'))
 <body>
 <?php 
 $total = $wpdb->get_row('SELECT COUNT(*) AS total FROM '.FS_TABLENAME)->total;
-if($total > 0) {
+
 	require_once(dirname(__FILE__).'/fs_helpers.php');
 	require_once(dirname(__FILE__).'/fs_paginator.php');
 	
@@ -66,82 +66,83 @@ if($total > 0) {
 		'pageLimit'=>5,
 		'totalItems'=>$total
 	));
-}
+	$offset = ($paginator->getCurrentPage() - 1) * 5;
+	if( $offset < 0 ) { $offset = 0; }
 
-// get all galleries
-$sql = 'SELECT * FROM '.FS_TABLENAME;
-if(isset($limit))
-	$sql .= ' '.$limit;
-	
-$items = $wpdb->get_results($sql);
-?>
-<div id="fs-medialist-wrap">
-	<div class="tablenav">
-		<div class="alignleft">
-	    	<h3><?php _e('FotoSlide Galleries'); ?></h3>
-	    	<p><?php _e('Copy and paste the code of the gallery into the editor to show it on your page');?></p>
-	    </div>
-		<div class="tablenav-pages"><?php echo $paginator->render(); ?></div>
+	// get all galleries
+	$sql = 'SELECT * FROM '.FS_TABLENAME.' LIMIT '. $offset . ',5';
+	$items = $wpdb->get_results($sql);
+	?>
+	<div id="fs-medialist-wrap">
+		<div class="tablenav">
+			<div class="alignleft">
+		    	<h3><?php _e('FotoSlide Galleries'); ?></h3>
+		    	<p><?php _e('Copy and paste the code of the gallery into the editor to show it on your page');?></p>
+		    </div>
+			<div class="tablenav-pages"><?php echo $paginator->render(); ?></div>
+		</div>
+		<form method="post" action="">
+		<table class="widefat">
+		  <thead>
+		    <tr>
+		      <th scope="col" width="25px" class="manage-column"><?php _e('ID'); ?></th>
+		      <th scope="col" class="manage-column"><?php _e('Gallery Name'); ?></th>
+		      <th scope="col" class="manag-column"><?php _e('Image count'); ?></th>
+		      <th scope="col" class="manage-column"><?php _e('Size (w x h)'); ?></th>
+		      <th scope="col" class="manage-column"><?php _e('Timeout'); ?></th>
+		      <th scope="col" class="manage-column"><?php _e('Transition Speed'); ?></th>
+		      <th scope="col" class="manage-column"><?php _e('Code'); ?></th>
+		    </tr>
+		  </thead>
+		  <tfoot>
+		    <tr>
+		      <th scope="col" width="25px" class="manage-column"><?php _e('ID'); ?></th>
+		      <th scope="col" class="manage-column"><?php _e('Gallery Name'); ?></th>
+		      <th scope="col" class="manag-column"><?php _e('Image count'); ?></th>
+		      <th scope="col" class="manage-column"><?php _e('Size (w x h)'); ?></th>
+		      <th scope="col" class="manage-column"><?php _e('Timeout'); ?></th>
+		      <th scope="col" class="manage-column"><?php _e('Transition Speed'); ?></th>
+		      <th scope="col" class="manage-column"><?php _e('Code'); ?></th>
+		    </tr>
+		  </tfoot>
+		  <tbody>
+		  <?php if($items && (count($items) > 0)) : ?>
+		    
+		    <?php foreach($items as $gallery) : ?>
+		    <tr id="fs-<?php echo $gallery->id; ?>">
+		      <td><?php echo $gallery->id; ?></td>
+		      <td><?php echo stripslashes($gallery->gallery_name); ?></td>
+		      <td><?php echo count(unserialize($gallery->items)); ?></td>
+		      <td><?php echo $gallery->width . ' x ' . $gallery->height; ?></td>
+		      <td><?php echo $gallery->timeout; ?></td>
+		      <td><?php echo $gallery->transition_speed; ?></td>
+		      <td><input type="text" class="code" value='<?php _e('[fs id="' . $gallery->id . '"]')?>' /></td>
+		    </tr>
+		    <?php endforeach; ?>
+		    
+		  <?php else : ?>
+		    <tr>
+		      <td colspan="7"><?php _e('You currently do not have any galleries'); ?></td>
+		    </tr>
+		  <?php endif; ?>
+		  </tbody>
+		</table>
+		</form>
+		<div class="tablenav">
+			<div class="tablenav-pages"><?php echo isset($p) ? $p->show() : ''; ?></div>
+		</div>
 	</div>
-	<form method="post" action="">
-	<table class="widefat">
-	  <thead>
-	    <tr>
-	      <th scope="col" width="25px" class="manage-column"><?php _e('ID'); ?></th>
-	      <th scope="col" class="manage-column"><?php _e('Gallery Name'); ?></th>
-	      <th scope="col" class="manag-column"><?php _e('Image count'); ?></th>
-	      <th scope="col" class="manage-column"><?php _e('Size (w x h)'); ?></th>
-	      <th scope="col" class="manage-column"><?php _e('Timeout'); ?></th>
-	      <th scope="col" class="manage-column"><?php _e('Transition Speed'); ?></th>
-	      <th scope="col" class="manage-column"><?php _e('Code'); ?></th>
-	    </tr>
-	  </thead>
-	  <tfoot>
-	    <tr>
-	      <th scope="col" width="25px" class="manage-column"><?php _e('ID'); ?></th>
-	      <th scope="col" class="manage-column"><?php _e('Gallery Name'); ?></th>
-	      <th scope="col" class="manag-column"><?php _e('Image count'); ?></th>
-	      <th scope="col" class="manage-column"><?php _e('Size (w x h)'); ?></th>
-	      <th scope="col" class="manage-column"><?php _e('Timeout'); ?></th>
-	      <th scope="col" class="manage-column"><?php _e('Transition Speed'); ?></th>
-	      <th scope="col" class="manage-column"><?php _e('Code'); ?></th>
-	    </tr>
-	  </tfoot>
-	  <tbody>
-	  <?php if($items && (count($items) > 0)) : ?>
-	    
-	    <?php foreach($items as $gallery) : ?>
-	    <tr id="fs-<?php echo $gallery->id; ?>">
-	      <td><?php echo $gallery->id; ?></td>
-	      <td><?php echo stripslashes($gallery->gallery_name); ?></td>
-	      <td><?php echo count(unserialize($gallery->items)); ?></td>
-	      <td><?php echo $gallery->width . ' x ' . $gallery->height; ?></td>
-	      <td><?php echo $gallery->timeout; ?></td>
-	      <td><?php echo $gallery->transition_speed; ?></td>
-	      <td><input type="text" class="code" value='<?php _e('[fs id="' . $gallery->id . '"]')?>' /></td>
-	    </tr>
-	    <?php endforeach; ?>
-	    
-	  <?php else : ?>
-	    <tr>
-	      <td colspan="7"><?php _e('You currently do not have any galleries'); ?></td>
-	    </tr>
-	  <?php endif; ?>
-	  </tbody>
-	</table>
-	</form>
-	<div class="tablenav">
-		<div class="tablenav-pages"><?php echo isset($p) ? $p->show() : ''; ?></div>
-	</div>
-</div>
-<script type="text/javascript">
-//<![CDATA[
-jQuery(document).ready(function($) {
-	$('input.code').click(function() {
-		$(this).select();
+	<script type="text/javascript">
+	//<![CDATA[
+	jQuery(document).ready(function($) {
+		$('input.code').click(function() {
+			$(this).select();
+		});
 	});
-});
-//]]>
-</script>
+	//]]>
+	</script>
+<?php
+
+?>
 </body>
 </html>
