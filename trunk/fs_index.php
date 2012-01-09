@@ -76,13 +76,26 @@ add_action('activate_fotoslide/fs_index.php', 'fs_activation');
  */
 function fs_register_scripts()
 {
-	wp_register_script('intelislide', WP_PLUGIN_URL . '/fotoslide/assets/intelislide.jquery.min.js', array('jquery', 'jquery-ui-tabs'), '1.0',false);
+	wp_register_script(
+        'intelislide',
+        WP_PLUGIN_URL . '/fotoslide/assets/intelislide.jquery.min.js',
+        array('jquery'),
+        '1.0',
+        false
+    );
 	wp_enqueue_script('intelislide');
+}
+add_action('init','fs_register_scripts');
 
+function fs_register_admin_scripts()
+{
+    wp_enqueue_script('jquery');
+    wp_enqueue_script('jquery-ui-tabs');
+    wp_enqueue_script('thickbox');
     wp_enqueue_style('fotoslide-admin', WP_PLUGIN_URL . '/fotoslide/assets/admin.css');
     wp_enqueue_style('fotoslide-frontend', WP_PLUGIN_URL . '/fotoslide/assets/jquery-ui-1.7.3.custom.css');
 }
-add_action('init','fs_register_scripts');
+add_action('admin_enqueue_scripts', 'fs_register_admin_scripts');
 
 /**
  * Register shortcode
