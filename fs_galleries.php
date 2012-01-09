@@ -241,7 +241,6 @@ if(count($items) > 0) {
 		);
 	}
 }
-$mediaURL = 'http://new.serenhub.co.uk/wp-admin/media-upload.php?type=image&TB_iframe=1&width=640&height=878';
 ?>
 <p>&nbsp;</p>
 <div id="new-gallery-item-form">
