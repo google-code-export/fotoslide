@@ -30,10 +30,14 @@ if($action == 'delete-gallery' && isset($_GET['confirm']) && isset($_GET['gid'])
 		);
 	} else {
 		$gallery = $wpdb->get_row($wpdb->prepare("SELECT * FROM ".FS_TABLENAME." WHERE id = %d",array($_GET['gid'])));
-		if($gallery) {
+		if( isset( $gallery ) ) {
+			$items = unserialize($gallery->items);
+
 			// delete unused postmeta
-			$sql = "DELETE FROM $wpdb->postmeta WHERE meta_key LIKE '_fs_%' AND post_id IN(".implode(',',unserialize($gallery->items)).")";
-			$wpdb->query($sql);
+			if( !empty( $items ) ) {
+				$sql = "DELETE FROM $wpdb->postmeta WHERE meta_key LIKE '_fs_%' AND post_id IN(".implode(',', $items).")";
+				$wpdb->query($sql);
+			}
 			
 			$sql = "DELETE FROM ".FS_TABLENAME." WHERE id=".$gallery->id;
 			$wpdb->query($sql);
