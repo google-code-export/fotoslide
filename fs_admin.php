@@ -81,7 +81,7 @@ function fs_admin_head()
 		add_action( 'admin_footer','fs_admin_footer' );
 	}
 }
-add_action( 'admin_head', 'fs_admin_head');
+add_action( 'admin_enqueue_scripts', 'fs_admin_head');
 
 
 /**
