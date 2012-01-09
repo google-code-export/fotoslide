@@ -25,7 +25,6 @@ $paginator = new FS_Paginator(array(
 $offset = ($paginator->getCurrentPage() - 1) * 5;
 ?>
 
-
 <?php if($message['output']) : ?>
 <div class="message <?php echo $message['type']; ?>"><?php _e($message['message']); ?></div>
 <div class="clear"><br class="clear" /></div>
