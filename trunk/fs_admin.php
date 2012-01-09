@@ -22,6 +22,13 @@ function fs_main_menu()
 	<div class="wrap">
 		<div id="icon-themes" class="icon32"></div>
 		<h2><?php _e('FotoSlide'); ?></h2>
+
+		<?php
+		if( !is_writable( plugin_dir_path( __FILE__ ) . '/cache' ) || !is_writable( plugin_dir_path( __FILE__ ) . '/temp' ) ) {
+			echo '<div id="message" class="error"><p><strong>' . __("Make sure the directories cache and temp directories are writable by your webserver (chmod 777).") .' </strong></p></div>';
+		}
+		?>
+
 		<!-- JUI Tabs -->
 		<div id="fs-tabs">
 
