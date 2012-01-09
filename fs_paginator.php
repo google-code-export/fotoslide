@@ -154,8 +154,8 @@ class FS_Paginator
 		
 		// show previous link if not on page one
 		if($this->getCurrentPage()>1) {
-			$html .= '<a href="'.$this->createLink(array('page'=>1)).'">Beginning</a>';
-			$html .= '<a href="'.$this->createLink(array('page'=>$prevPage)).'">'.$this->prevLink.'</a>';
+			$html .= '<a href="'.$this->createLink(array( $this->pageVar =>1)).'">Beginning</a>';
+			$html .= '<a href="'.$this->createLink(array( $this->pageVar => $prevPage)).'">'.$this->prevLink.'</a>';
 		}
 		
 		// loop through page links
@@ -164,7 +164,7 @@ class FS_Paginator
 			if($this->getCurrentPage()===$i)
 				$pages[] = '<span class="current">'.$i.'</span>';
 			else
-				$pages[] = '<a href="'.$this->createLink(array('page'=>$i)).'">'.$i.'</a>';	
+				$pages[] = '<a href="'.$this->createLink(array( $this->pageVar => $i)).'">'.$i.'</a>';	
 		}
 		
 		if($this->totalPages() <= $this->range) {
@@ -182,8 +182,8 @@ class FS_Paginator
 		
 		// show next link if page num is less than total
 		if($this->getCurrentPage()<$this->totalPages()) {
-			$html .= '<a href="'.$this->createLink(array('page'=>$nextPage)).'">'.$this->nextLink.'</a>';
-			$html .= '<a href="'.$this->createLink(array('page'=>$this->totalPages())).'">Last</a>';
+			$html .= '<a href="'.$this->createLink(array( $this->pageVar => $nextPage)).'">'.$this->nextLink.'</a>';
+			$html .= '<a href="'.$this->createLink(array( $this->pageVar => $this->totalPages())).'">Last</a>';
 		}
 			
 		$html .= '</div>';
