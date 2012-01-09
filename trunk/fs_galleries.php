@@ -8,21 +8,21 @@ global $wpdb;
 
 // include the form processor
 require_once(dirname(__FILE__).'/fs_processform.php');
+require_once(dirname(__FILE__).'/fs_paginator.php');
 
 // gallery pagination and query
 $galleryCount = (int)$wpdb->get_row("SELECT COUNT(*) as tot FROM ".FS_TABLENAME)->tot;
 if($galleryCount > 0) {
-	require_once(dirname(__FILE__).'/pagination.class.php');
-	$p = new pagination;
-	$currentPage = isset($_GET['paging']) ? $_GET['paging'] : 1;
-	$p->items($galleryCount);
-	$p->limit(5);
-	$p->target('upload.php?page=fotoslide');
-	$p->currentPage($currentPage);
-	$p->parameterName('paging');
-	$p->adjacents(1);
-	$p->page = isset($_GET['paging']) ? (int)$_GET['paging'] : 1;
-	$limit = "LIMIT " . ($p->page - 1) * $p->limit . ', ' . $p->limit;
+  $paginator = new FS_Paginator(array(
+    'totalItems'=> $galleryCount,
+    'baseUrl'=> 'upload.php',
+    'pageLimit' => 5,
+    'pageParams'=>array(
+      'page' => 'fotoslide'
+    ),
+    'pageVar' => 'subpage'
+  ));
+  $offset = ($paginator->getCurrentPage() - 1) * 5;
 }?>
 
 
@@ -37,7 +37,7 @@ if($galleryCount > 0) {
 	<div class="alignleft">
     	<h3><?php _e('Gallery List'); ?></h3>
     </div>
-	<div class="tablenav-pages"><?php echo ($galleryCount) > 0 ? $p->show() : ''; ?></div>
+	<div class="tablenav-pages"><?php $paginator->render(); ?></div>
 </div>
 <table class="widefat fixed" cellspacing="0">
   <thead>
@@ -66,7 +66,7 @@ if($galleryCount > 0) {
   <?php if($galleryCount > 0) : ?>
   
   	<!-- start gallery loop -->
-    <?php $alt = false; foreach($wpdb->get_results("SELECT * FROM " .FS_TABLENAME.' '.$limit) as $gallery) : ?>
+    <?php $alt = false; foreach($wpdb->get_results("SELECT * FROM " .FS_TABLENAME.' LIMIT '. $offset . ',5' ) as $gallery) : ?>
     <tr id="fs-gallery-<?php echo $gallery->id; ?>" valign="top"<?php if($alt) : ?> class="alternate"<?php endif; $alt = $alt ? false : true; ?>>
       <td><?php echo $gallery->id; ?></td>
       <td><?php echo stripslashes($gallery->gallery_name); ?></td>
@@ -96,7 +96,7 @@ if($galleryCount > 0) {
     <div class="alignleft actions">
         <a href="<?php echo WP_PLUGIN_BASE_URL; ?>&amp;action=new-gallery" class="button-secondary"><?php _e('New Gallery'); ?></a>
     </div>
-	<div class="tablenav-pages"><?php echo ($galleryCount) > 0 ? $p->show() : ''; ?></div>
+	<div class="tablenav-pages"><?php $paginator->render(); ?></div>
 </div>
 <div class="clear"></div><br class="clear" />
 <!-- END gallery listing @package FotoSlide -->
