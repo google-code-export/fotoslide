@@ -12,18 +12,18 @@ require_once(dirname(__FILE__).'/fs_paginator.php');
 
 // gallery pagination and query
 $galleryCount = (int)$wpdb->get_row("SELECT COUNT(*) as tot FROM ".FS_TABLENAME)->tot;
-if($galleryCount > 0) {
-  $paginator = new FS_Paginator(array(
-    'totalItems'=> $galleryCount,
-    'baseUrl'=> 'upload.php',
-    'pageLimit' => 5,
-    'pageParams'=>array(
-      'page' => 'fotoslide'
-    ),
-    'pageVar' => 'subpage'
-  ));
-  $offset = ($paginator->getCurrentPage() - 1) * 5;
-}?>
+
+$paginator = new FS_Paginator(array(
+  'totalItems'=> $galleryCount,
+  'baseUrl'=> 'upload.php',
+  'pageLimit' => 5,
+  'pageParams'=>array(
+    'page' => 'fotoslide'
+  ),
+  'pageVar' => 'subpage'
+));
+$offset = ($paginator->getCurrentPage() - 1) * 5;
+?>
 
 
 <?php if($message['output']) : ?>
