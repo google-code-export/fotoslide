@@ -51,8 +51,13 @@ function fs_render_slider( $gid )
 	// loop through
 	foreach($images as $image) {
 		$meta = unserialize($image->meta);
-		
-		$ret .= '<a href="'.$meta['image_link'].'"';
+
+		if( !empty( $meta['image_link'] ) ) { 
+			$ret .= '<a href="'.$meta['image_link'].'" class="intelslide"';
+		}
+		else {
+			$ret .= '<span class="intelslide"';
+		}
 		
 		if(empty($meta['caption_text'])) {
 			$ret .= '>';
@@ -79,7 +84,14 @@ function fs_render_slider( $gid )
 		}
 		
 		$ret .= '<img src="'.WP_PLUGIN_URL.'/fotoslide/timthumb.php?src='.$meta['file'].'&amp;w='.$gallery->width.'&amp;h='.$gallery->height.'"';
-		$ret .= ' alt="Image" /></a>'."\n";
+		$ret .= ' alt="Image" />';
+
+		if( !empty( $meta['image_link'] ) ) { 
+			$ret .= '</a>'."\n";
+		}
+		else {
+			$ret .= '</span>'."\n";
+		}
 	}
 	
 	$ret .= '<span class="caption"></span>';
