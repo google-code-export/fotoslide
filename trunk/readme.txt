@@ -24,6 +24,14 @@ please visit the page at http://code.google.com/p/fotoslide/.
 
 == Changelog ==
 
+= 2.0 =
+* Bugfix slider so it works with recent jQuery versions
+* Rewritten pagination class and added search box in add gallery item
+* Show error when cache/temp folder isn't writeable
+* Update timthumb.php
+* Only load script on the correct pages
+* Cleanup code
+
 = 1.1 =
 * Fixed admin layout for lower resolution screen sizes
 * Gallery degrades properly when JavaScript is off
