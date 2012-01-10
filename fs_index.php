@@ -76,14 +76,7 @@ add_action('activate_fotoslide/fs_index.php', 'fs_activation');
  */
 function fs_register_scripts()
 {
-	wp_register_script(
-        'intelislide',
-        WP_PLUGIN_URL . '/fotoslide/assets/intelislide.jquery.min.js',
-        array('jquery'),
-        '1.0',
-        false
-    );
-	wp_enqueue_script('intelislide');
+	wp_register_script( 'intelislide', plugins_url( 'assets/intelislide.jquery.min.js', __FILE__ ), array('jquery'), '1.0', false );
 }
 add_action('init','fs_register_scripts');
 
@@ -149,8 +142,10 @@ add_filter('the_content','fs_filter_content');
 function fs_prepare_js( $galleries = array() )
 {
 	global $pageGalleries, $wpdb;
-	
+
 	if(count($pageGalleries) > 0) {
+		wp_print_scripts('intelislide');
+		
 		$galleries = $wpdb->get_results("SELECT * FROM ".FS_TABLENAME." WHERE id IN(".implode(',',$pageGalleries).")");
 		?>
 		<!-- simpleslide -->
