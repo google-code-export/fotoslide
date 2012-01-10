@@ -49,7 +49,7 @@
 		var _e = $(this);
 		var _tag = '#' + _e.attr('id');
 		var _caption = $(_tag + ' ' + opts.tagType + '.caption');
-		var _first = _e.children('a:first');
+		var _first = _e.children('.intelslide:first');
 		var _text = _first.attr('rel');
 		var _content = _e.next(opts.tagType + '.content');
 		var _index = 0;
@@ -61,10 +61,10 @@
 		_caption.css({padding:'8px',position:'absolute','z-index':600}).hide();
 		
 		// set the CSS of all <a> elements
-		_e.children(_tag + ' a').css({'float':'left','position':'absolute'}).hide();
+		_e.children(_tag + ' .intelslide').css({'float':'left','position':'absolute'}).hide();
 		
 		// unhide the first element and fire caption if present
-		_e.children(_tag + ' a:first').fadeIn(400,function() {
+		_e.children(_tag + ' .intelslide:first').fadeIn(400,function() {
 			if( _first.attr('title') != undefined && _first.attr('title').length > 0) {
 				setCaptionStyle(_first);
 				_caption.slideDown().html(_first.attr('title'));
@@ -73,7 +73,7 @@
 		
 		// hide cursor hand for all <a> that do not have a value
 		_e.children('a').each(function() {
-			if($(this).attr('href').length <= 1) {
+			if($(this).attr('href') != undefined  && $(this).attr('href').length <= 1) {
 				$(this).click(function() { return false; });
 				$(this).mouseover(function() { $(this).css({'cursor':'default'}); });
 			}
@@ -92,10 +92,10 @@
 			var _loop = setInterval(function() {
 				
 				// get current element
-				var current = _e.children('a').eq(_index);
+				var current = _e.children('.intelslide').eq(_index);
 				
 				// get next element
-				var next = ((current.index() + 1) == _e.children('a').length) ? _e.children('a').eq(0) : _e.children('a').eq((_index + 1));
+				var next = ((current.index() + 1) == _e.children('.intelslide').length) ? _e.children('.intelslide').eq(0) : _e.children('.intelslide').eq((_index + 1));
 				
 				// determine if next element has caption
 				var nextCaption = (next.attr('title') != undefined && next.attr('title').length > 0) ? next.attr('title') : false;
